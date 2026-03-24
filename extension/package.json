@@ -9,16 +9,22 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "ocdbug-logger.helloWorld",
-        "title": "Hello World"
+    "configuration": {
+      "title": "DevTracker",
+      "properties": { 
+        "devtracker.serverUrl": {
+          "type": "string",
+          "default": "http://localhost:5000",
+          "description": "Server endpoint for activity logging"
+        }
       }
-    ]
-  },
+    }
+  }
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
