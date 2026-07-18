@@ -1,0 +1,38 @@
+{
+    "name": "@devtracker/extension",
+    "displayName": "DevTracker",
+    "description": "Tracks coding activity and generates development insights.",
+    "version": "0.0.1",
+    "publisher": "devtracker",
+    "engines": {
+        "vscode": "^1.100.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "devtracker.start",
+                "title": "DevTracker: Start"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "watch": "tsc -w -p tsconfig.json",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "@types/node": "^24.13.3",
+        "@types/vscode": "^1.125.0",
+        "@vscode/test-cli": "^0.0.11",
+        "@vscode/test-electron": "^2.5.2",
+        "typescript": "^5.9.3"
+    }
+}
