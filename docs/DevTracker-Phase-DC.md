@@ -25,11 +25,12 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 
 ## 🔴 BLOCKER Tasks — must close before Phase 3 starts
 
-### DC-1: Tenancy / auth model
+### DC-1: Tenancy / auth model — ✅ CLOSED
 - **Decision needed:** single-tenant local install vs. multi-user cloud accounts from day one.
 - **Type:** locked-core.
 - **Why it's here:** Phase 4 (DB schema) is scheduled before Phase 7 (auth). Building tables without a `user_id`/tenant column baked in means a live-data migration later, not a schema edit.
-- **Output artifact:** one paragraph in this doc stating the model + how it maps to `Session`/`Project`/`Activity` tables.
+- **Decision (final):** Option C — schema-ready single-tenant. Every table (`Session`, `Project`, `Activity`) carries a non-nullable, indexed, foreign-keyed `accountId` from the first migration. Each local install auto-provisions one default `Account` row at first run — no login screen, no password, nothing user-facing changes in v1. Every backend query is scoped with `WHERE accountId = ?` from the first line of query code written, not retrofitted later. Full auth (login, JWT, refresh tokens, protected routes) is deliberately deferred to Phase 7 and stays sequential, not parallel — it will attach a resolved `accountId` to a session token when it lands, requiring zero schema change at that point. Rejected Option A (no tenant column) because it blocks the already-planned Cloud Sync/Multi-device/Team Workspaces features and would force the exact live-data migration this decision exists to avoid. Rejected full Option B (complete auth system now) and parallel-Phase-7 because both attach security-critical code to an API surface and query-scoping pattern that are still being defined in Phase 3–5 — building auth against a moving target risks permission checks silently going stale against a changed data model (the IDOR-class failure mode), and dormant auth code that ships before anything exercises it tends to hide bugs longest.
+- **Output artifact:** decision paragraph above.
 - **Unblocks:** Phase 4 schema design.
 
 ### DC-2: Stack reconciliation (Prisma+SQLite/Postgres vs Fastify+Drizzle+Postgres-only)
@@ -39,7 +40,7 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 - **Output artifact:** delete or archive the losing doc; update the surviving one as canonical.
 - **Unblocks:** Phase 3 scaffolding.
 
-### DC-3: Path normalization at capture
+### DC-3: Path normalization at capture — ✅ CLOSED
 - **Decision needed:** normalize `document.uri.fsPath` to workspace-relative path inside the listener, before it reaches the dispatcher.
 - **Type:** locked-core.
 - **Why it's here:** absolute paths leak OS username and folder/client names. Fixing this at ingestion (backend) is too late — the raw path already left the client and may already be cached/logged locally.
@@ -97,9 +98,9 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 
 | Item | Status | Decision | Date |
 |---|---|---|---|
-| DC-1 | ⬜ Open | — | — |
+| DC-1 | ✅ Closed | Schema-ready single-tenant, `accountId` on all tables, auth deferred sequentially to Phase 7 | 2026-07-19 |
 | DC-2 | ⬜ Open | — | — |
-| DC-3 | ✅ Close | Resolved | 19-07-26 |
+| DC-3 | ✅ Closed | Path normalization implemented via `toTrackedPath()`; all 4 listeners updated; verified external-file case | 2026-07-19 |
 | DC-4 | ⬜ Open | — | — |
 | DC-5 | ⬜ Deferred (pre-Phase 7) | — | — |
 | DC-6 | ⬜ Deferred (pre-Phase 9) | — | — |
