@@ -6,15 +6,25 @@ import {
     registerDocumentCloseListener,
     registerDocumentSaveListener
 } from "./listeners";
+import {
+    LoggerProcessor,
+    SessionProcessor
+} from "./processors";
 
 export function activate(context: vscode.ExtensionContext): void {
     console.log("DevTracker activated.");
 
     const dispatcher = new EventDispatcher();
 
+    const sessionProcessor = new SessionProcessor();
+
+    dispatcher.register(new LoggerProcessor());
+    dispatcher.register(sessionProcessor);
+
     const command = vscode.commands.registerCommand(
         "devtracker.start",
         () => {
+            console.log(sessionProcessor.getCurrentSession());
             vscode.window.showInformationMessage("DevTracker started.");
         }
     );
