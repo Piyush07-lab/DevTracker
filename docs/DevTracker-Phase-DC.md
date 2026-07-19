@@ -99,7 +99,7 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 |---|---|---|---|
 | DC-1 | ⬜ Open | — | — |
 | DC-2 | ⬜ Open | — | — |
-| DC-3 | ⬜ Open | — | — |
+| DC-3 | ✅ Close | Resolved | 19-07-26 |
 | DC-4 | ⬜ Open | — | — |
 | DC-5 | ⬜ Deferred (pre-Phase 7) | — | — |
 | DC-6 | ⬜ Deferred (pre-Phase 9) | — | — |
