@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { EventDispatcher } from "../dispatcher";
+import { toTrackedPath } from "../paths";
 
 export function registerActiveEditorListener(
     context: vscode.ExtensionContext,
@@ -14,7 +15,7 @@ export function registerActiveEditorListener(
         dispatcher.dispatch({
             type: "editor.active",
             timestamp: Date.now(),
-            file: editor.document.uri.fsPath
+            file: toTrackedPath(editor.document.uri)
         });
     });
 

@@ -1,5 +1,12 @@
 import * as vscode from "vscode";
 import { EventDispatcher } from "../dispatcher";
+import { toTrackedPath } from "../paths";
+
+/**
+ * `file` is workspace-relative (e.g. "src/index.ts"), or
+ * "external:<basename>" for files outside any open workspace folder.
+ * NEVER populate this with an absolute filesystem path — see DC-3.
+ */
 
 export function registerDocumentOpenListener(
     context: vscode.ExtensionContext,
@@ -10,7 +17,7 @@ export function registerDocumentOpenListener(
         dispatcher.dispatch({
             type: "document.open",
             timestamp: Date.now(),
-            file: document.uri.fsPath
+            file: toTrackedPath(document.uri)
         });
     });
 

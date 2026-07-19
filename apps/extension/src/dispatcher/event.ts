@@ -2,6 +2,12 @@ export interface BaseEvent {
     timestamp: number;
 }
 
+/**
+ * `file` is workspace-relative (e.g. "src/index.ts"), or
+ * "external:<basename>" for files outside any open workspace folder.
+ * NEVER populate this with an absolute filesystem path — see DC-3.
+ */
+
 export interface ActiveEditorEvent extends BaseEvent {
     type: "editor.active";
     file: string;
