@@ -99,7 +99,7 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 | Item | Status | Decision | Date |
 |---|---|---|---|
 | DC-1 | ✅ Closed | Schema-ready single-tenant, `accountId` on all tables, auth deferred sequentially to Phase 7 | 2026-07-19 |
-| DC-2 | ⬜ Open | — | — |
+| DC-2 | ✅ Closed | `docs/DevTracker-Technology-Stack.md` canonical (Express+Prisma+SQLite/Postgres); losing doc's stack section purged | 2026-07-19 |
 | DC-3 | ✅ Closed | Path normalization implemented via `toTrackedPath()`; all 4 listeners updated; verified external-file case | 2026-07-19 |
 | DC-4 | ⬜ Open | — | — |
 | DC-5 | ⬜ Deferred (pre-Phase 7) | — | — |
