@@ -1,35 +1,12 @@
-export interface BaseEvent {
-    timestamp: number;
-}
-
-/**
- * `file` is workspace-relative (e.g. "src/index.ts"), or
- * "external:<basename>" for files outside any open workspace folder.
- * NEVER populate this with an absolute filesystem path — see DC-3.
- */
-
-export interface ActiveEditorEvent extends BaseEvent {
-    type: "editor.active";
-    file: string;
-}
-
-export interface DocumentOpenEvent extends BaseEvent {
-    type: "document.open";
-    file: string;
-}
-
-export interface DocumentSaveEvent extends BaseEvent {
-    type: "document.save";
-    file: string;
-}
-
-export interface DocumentCloseEvent extends BaseEvent {
-    type: "document.close";
-    file: string;
-}
-
-export type DevTrackerEvent =
-    | ActiveEditorEvent
-    | DocumentOpenEvent
-    | DocumentSaveEvent
-    | DocumentCloseEvent;
+// DevTrackerEvent now lives in @devtracker/types (packages/types/src/events.ts)
+// as the single source of truth shared with the backend. Re-exported here
+// so existing imports (`from "../dispatcher"`) across the extension don't
+// need to change. See DC-4.
+export type {
+    BaseEvent,
+    ActiveEditorEvent,
+    DocumentOpenEvent,
+    DocumentSaveEvent,
+    DocumentCloseEvent,
+    DevTrackerEvent
+} from "@devtracker/types";

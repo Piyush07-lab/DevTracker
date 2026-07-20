@@ -45,6 +45,10 @@ importers:
   apps/dashboard: {}
 
   apps/extension:
+    dependencies:
+      '@devtracker/types':
+        specifier: workspace:*
+        version: link:../../packages/types
     devDependencies:
       '@types/node':
         specifier: ^24.13.3

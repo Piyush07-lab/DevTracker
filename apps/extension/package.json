@@ -31,6 +31,9 @@
         "test:watch": "vitest",
         "test:vscode": "vscode-test"
     },
+    "dependencies": {
+        "@devtracker/types": "workspace:*"
+    },
     "devDependencies": {
         "@types/node": "^24.13.3",
         "@types/vscode": "^1.125.0",
