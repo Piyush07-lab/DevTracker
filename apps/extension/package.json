@@ -26,13 +26,17 @@
         "build": "tsc -p tsconfig.json",
         "watch": "tsc -w -p tsconfig.json",
         "typecheck": "tsc --noEmit",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:vscode": "vscode-test"
     },
     "devDependencies": {
         "@types/node": "^24.13.3",
         "@types/vscode": "^1.125.0",
         "@vscode/test-cli": "^0.0.11",
         "@vscode/test-electron": "^2.5.2",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.10"
     }
 }

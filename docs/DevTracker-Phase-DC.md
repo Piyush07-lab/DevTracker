@@ -90,10 +90,11 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 
 ---
 
-### DC-7: SessionManager idle-boundary unit tests
+### DC-7: SessionManager idle-boundary unit tests — ✅ CLOSED
 - **Type:** flexible-shell, logic-sensitive.
-- **Action:** add unit tests for the `>` vs `>=` idle-timeout boundary and equal-timestamp edge cases now, while `SessionManager` is small and isolated — before Phase 5 builds the session queue on top of it.
-- **Outsourceable:** yes — pure unit test generation against existing `SessionManager`/`Session` interfaces, no architecture decisions involved. Can be handed to another model with the two source files as context.
+- **Action:** unit tests written (Vitest) covering: initial null state, first event creates session, second event within idle window extends it, file dedup, exact-boundary idle timeout (`>` not `>=`), 1ms-past-timeout completion, same-timestamp non-completion.
+- **Outsourceable:** done — generated externally, reviewed and merged.
+- **Follow-up discovered during review (not part of DC-7's original scope):** `getCurrentSession()` returns `Readonly<Session>`, but `Readonly<T>` is shallow — `files: Set<string>` is still mutable through the returned reference (`session.files.add(...)` mutates real internal state, confirmed by test). Logged as a note, not a blocker: fix by returning a shallow clone (`{ ...currentSession, files: new Set(currentSession.files) }`) whenever `SessionManager` is next touched (Phase 5 session engine work is the natural point). Classification: flexible-shell, internal API contract only, not a wire/schema/auth boundary.
 
 ### DC-8: Per-workspace session tracking
 - **Type:** flexible-shell.
@@ -119,7 +120,7 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 | DC-4 | ✅ Closed | Batch by session; partial-failure accepted; bad data quarantined not discarded; identity via DC-9 token; `/v1/` versioned | 2026-07-19 |
 | DC-5 | ⬜ Deferred (pre-Phase 7) | — | — |
 | DC-6 | ⬜ Deferred (pre-Phase 9) | — | — |
-| DC-7 | ⬜ Open | — | — |
+| DC-7 | ✅ Closed | Unit tests merged; surfaced shallow-Readonly Set-mutation issue, logged as follow-up for Phase 5 | 2026-07-19 |
 | DC-8 | ⬜ No action | — | — |
 | DC-9 | ✅ Closed | Opaque install-token bootstrap (`POST /v1/install`); backend resolves token→accountId server-side, never client-asserted | 2026-07-19 |
 
