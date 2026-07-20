@@ -33,11 +33,12 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 - **Output artifact:** decision paragraph above.
 - **Unblocks:** Phase 4 schema design.
 
-### DC-2: Stack reconciliation (Prisma+SQLite/Postgres vs Fastify+Drizzle+Postgres-only)
+### DC-2: Stack reconciliation (Prisma+SQLite/Postgres vs Fastify+Drizzle+Postgres-only) — ✅ CLOSED
 - **Decision needed:** single authoritative tech stack. Kill the losing doc.
 - **Type:** locked-core.
 - **Why it's here:** `docs/DevTracker-Technology-Stack.md` and `DevTracker_Project_Status_and_Tech_Stack.md` actively disagree on framework and ORM. Can't scaffold `apps/backend` with two conflicting sources of truth.
-- **Output artifact:** delete or archive the losing doc; update the surviving one as canonical.
+- **Decision (final):** `docs/DevTracker-Technology-Stack.md` is canonical — **Express + Prisma + SQLite (dev) / PostgreSQL (prod)**. Reason: this is the only one of the two stacks that satisfies the day-one product requirement stated in `DevTracker - Extension.txt` — "it should work with a cloud database or a local database" — and Prisma's dual-mode support is the mechanism that delivers it without forking the codebase. `DevTracker_Project_Status_and_Tech_Stack.md`'s Fastify+Drizzle+Postgres-only stack was determined to be a stray/mistaken generation that silently dropped the local-DB requirement without documenting why. It is purged rather than archived — no reason to keep a contradicting source of truth on disk.
+- **Output artifact:** `DevTracker_Project_Status_and_Tech_Stack.md`'s Technology Stack section deleted; document now defers to `docs/DevTracker-Technology-Stack.md` for stack questions.
 - **Unblocks:** Phase 3 scaffolding.
 
 ### DC-3: Path normalization at capture — ✅ CLOSED
@@ -47,12 +48,28 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 - **Output artifact:** updated `activeEditor.ts`, `documentOpen.ts`, `documentSave.ts`, `documentClose.ts` to emit relative paths; update `DevTrackerEvent.file` type/docs accordingly.
 - **Unblocks:** Phase 4 schema (don't design a `file` column around the wrong data shape), Phase 9 public API.
 
-### DC-4: Wire contract + validation boundary
+### DC-4: Wire contract + validation boundary — ✅ CLOSED
 - **Decision needed:** define the exact JSON shape for events/sessions crossing extension → SDK → backend, and enforce it with Zod at the backend boundary.
 - **Type:** locked-core.
 - **Why it's here:** SDK, backend, and eventual public API all need to agree on one contract simultaneously. Defining it after the backend exists means renegotiating a contract with live consumers.
-- **Output artifact:** a schema file (e.g. `packages/types/src/events.ts` + corresponding Zod schema) treated as the single source of truth, imported by both extension and backend.
-- **Unblocks:** Phase 3 backend implementation, Phase 5 session engine (queue needs a stable shape to serialize).
+- **Decision (final):**
+  - **Batch unit:** one session (with its constituent events) per request — not arbitrary event grouping.
+  - **Partial failure handling:** valid sessions in a batch are accepted; invalid ones are rejected individually, not the whole batch.
+  - **Bad data recovery:** rejected items are never discarded. Raw payload + validation error + timestamp are written to a `quarantined_events` table, reprocessable later once the cause (schema drift, stale extension version, etc.) is fixed. No silent data loss.
+  - **Identity/auth (pre-Phase-7):** see DC-9 — resolved via opaque install token, not client-asserted `accountId`.
+  - **Versioning:** all routes prefixed `/v1/...` from day one.
+  - **Shared types:** `DevTrackerEvent` (currently extension-local in `dispatcher/event.ts`) and `Session` (currently `files: Set<string>`, must become `files: string[]` for JSON serialization) move to `packages/types/src/events.ts` as the single source of truth, imported by extension and backend both. Zod schemas mirror these types and are the first check every backend route runs.
+- **Output artifact:** decision summary above; implementation (shared types + Zod schemas) tracked as a Phase 3 task, not re-decided.
+- **Unblocks:** Phase 3 backend implementation, Phase 5 session engine.
+
+### DC-9: Pre-auth identity resolution (install token bootstrap) — ✅ CLOSED
+- **Surfaced:** mid-DC-4 discussion. Not originally in the blueprint — logged here per the Phase-DC rule that new locked-core risks found mid-phase get recorded, not silently absorbed into another item's decision.
+- **Decision needed:** how does the backend know which `accountId` a request belongs to, given DC-1 deferred real login to Phase 7?
+- **Type:** locked-core.
+- **Why it's here:** if the client is trusted to simply state its own `accountId` in the payload, any request can claim any account with zero verification — the same trust failure behind IDOR-class vulnerabilities (client-supplied identifiers accepted without server-side verification). Wrong even for a single-user local install, because it stays wrong once Phase 7/9 add real multi-user and public API consumers on top of the same endpoints.
+- **Decision (final):** on first run, the extension calls a bootstrap endpoint (`POST /v1/install`); the backend creates the default `Account` row (per DC-1) and returns an opaque token. The extension stores the token locally and sends it on every subsequent request. The backend resolves token → `accountId` server-side — the client never asserts its own account identity. Phase 7 login and Phase 9 API keys later become additional ways to obtain a valid token against this same resolution mechanism, requiring no rework of the ingest path.
+- **Output artifact:** decision summary above; `POST /v1/install` route and token-resolution middleware tracked as a Phase 3 implementation task.
+- **Unblocks:** Phase 3 backend implementation (specifically the ingest route's auth boundary).
 
 ---
 
@@ -72,8 +89,6 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 - **Can defer to:** immediately before Phase 9, once DC-1 is closed.
 
 ---
-
-## 🟡 MEDIUM — address opportunistically, not gating
 
 ### DC-7: SessionManager idle-boundary unit tests
 - **Type:** flexible-shell, logic-sensitive.
@@ -98,13 +113,14 @@ Phase-DC is a **conditional, non-sequential phase**. It does not sit permanently
 
 | Item | Status | Decision | Date |
 |---|---|---|---|
-| DC-1 | ✅ Closed | Schema-ready single-tenant, `accountId` on all tables, auth deferred sequentially to Phase 7 | 2026-07-19 |
+| DC-1 | ✅ Closed | Option C — schema-ready single-tenant, `accountId` on all tables, auth deferred sequentially to Phase 7 | 2026-07-19 |
 | DC-2 | ✅ Closed | `docs/DevTracker-Technology-Stack.md` canonical (Express+Prisma+SQLite/Postgres); losing doc's stack section purged | 2026-07-19 |
 | DC-3 | ✅ Closed | Path normalization implemented via `toTrackedPath()`; all 4 listeners updated; verified external-file case | 2026-07-19 |
-| DC-4 | ⬜ Open | — | — |
+| DC-4 | ✅ Closed | Batch by session; partial-failure accepted; bad data quarantined not discarded; identity via DC-9 token; `/v1/` versioned | 2026-07-19 |
 | DC-5 | ⬜ Deferred (pre-Phase 7) | — | — |
 | DC-6 | ⬜ Deferred (pre-Phase 9) | — | — |
 | DC-7 | ⬜ Open | — | — |
 | DC-8 | ⬜ No action | — | — |
+| DC-9 | ✅ Closed | Opaque install-token bootstrap (`POST /v1/install`); backend resolves token→accountId server-side, never client-asserted | 2026-07-19 |
 
-*Fill in "Decision" and "Date" columns as each item closes. Do not proceed to Phase 3 until DC-1 through DC-4 show ✅.*
+*Fill in "Decision" and "Date" columns as each item closes. Do not proceed to Phase 3 until DC-1 through DC-4 and DC-9 show ✅.*
