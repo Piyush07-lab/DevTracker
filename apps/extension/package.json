@@ -4,6 +4,7 @@
     "description": "Tracks coding activity and generates development insights.",
     "version": "0.0.1",
     "publisher": "devtracker",
+    "type": "commonjs",
     "engines": {
         "vscode": "^1.100.0"
     },
