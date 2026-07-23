@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface BaseEvent {
     timestamp: number;
 }
@@ -7,6 +9,39 @@ export interface BaseEvent {
  * "external:<basename>" for files outside any open workspace folder.
  * NEVER populate this with an absolute filesystem path — see DC-3.
  */
+
+export const BaseEventSchema = z.object({
+    timestamp: z.number().int().nonnegative()
+});
+
+export const ActiveEditorEventSchema = BaseEventSchema.extend({
+    type: z.literal("editor.active"),
+    file: z.string()
+});
+
+export const DocumentOpenEventSchema = BaseEventSchema.extend({
+    type: z.literal("document.open"),
+    file: z.string()
+});
+
+export const DocumentSaveEventSchema = BaseEventSchema.extend({
+    type: z.literal("document.save"),
+    file: z.string()
+});
+
+export const DocumentCloseEventSchema = BaseEventSchema.extend({
+    type: z.literal("document.close"),
+    file: z.string()
+});
+
+export const DevTrackerEventSchema = z.discriminatedUnion("type", [
+    ActiveEditorEventSchema,
+    DocumentOpenEventSchema,
+    DocumentSaveEventSchema,
+    DocumentCloseEventSchema
+]);
+
+
 
 export interface ActiveEditorEvent extends BaseEvent {
     type: "editor.active";
@@ -51,9 +86,20 @@ export type DevTrackerEvent =
  *    server-side from the install token attached to the request (see
  *    DC-9) — the client never asserts its own account identity.
  */
+
+export const SessionPayloadSchema = z.object({
+    startTime: z.number().int().nonnegative(),
+    lastActivity: z.number().int().nonnegative(),
+    files: z.array(z.string()),
+    events: z.array(DevTrackerEventSchema)
+});
+
 export interface SessionPayload {
     startTime: number;
     lastActivity: number;
     files: string[];
     events: DevTrackerEvent[];
 }
+
+export type DevTrackerEventDTO = z.infer<typeof DevTrackerEventSchema>;
+export type SessionPayloadDTO = z.infer<typeof SessionPayloadSchema>;
