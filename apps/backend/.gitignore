@@ -8,3 +8,9 @@ node_modules
 .windsurf/
 .agents/
 /src/generated/prisma
+
+# SQLite development database
+
+/prisma/dev.db
+/prisma/*.db
+/prisma/*.db-journal
