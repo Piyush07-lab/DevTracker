@@ -11,3 +11,48 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Account {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  username        String?  @unique
+  displayName     String?
+  passwordHash    String?
+  emailVerifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  installations Installation[]
+  installTokens InstallToken[]
+}
+
+model Installation {
+  id               String   @id @default(cuid())
+  accountId        String
+  deviceName       String
+  platform         String
+  extensionVersion String
+  lastSeenAt       DateTime?
+
+  createdAt DateTime @default(now())
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+}
+
+model InstallToken {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  accountId  String
+  expiresAt  DateTime
+  usedAt     DateTime?
+
+  createdAt DateTime @default(now())
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([expiresAt])
+}
