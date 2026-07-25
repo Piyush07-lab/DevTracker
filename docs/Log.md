@@ -453,7 +453,7 @@ The project now has:
 - Initial schema finalized
 - First migration committed to migration history
 - Development database initialized
-- Prisma Client generated
-- Foundation ready for backend persistence and API development
+- Prisma Client not generated 
+- Foundation not ready for backend persistence and API development
 
 This completes the database initialization milestone and unblocks implementation of the backend data layer, install bootstrap endpoint, and session ingestion pipeline.

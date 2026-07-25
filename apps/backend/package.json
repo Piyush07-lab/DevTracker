@@ -13,6 +13,7 @@
         "clean": "rimraf dist"
     },
     "dependencies": {
+        "@prisma/adapter-better-sqlite3": "^7.9.0",
         "@prisma/client": "^7.9.0",
         "cors": "^2.8.5",
         "express": "^5.1.0",
