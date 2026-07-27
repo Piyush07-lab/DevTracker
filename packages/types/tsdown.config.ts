@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
     entry: ["src/index.ts"],
@@ -14,5 +14,7 @@ export default defineConfig({
     // this package only re-exports interfaces/types today, but if it
     // ever pulls in a runtime dependency, we don't want two copies of
     // it duplicated into both the esm and cjs output.
-    external: []
+    deps: {
+        neverBundle: [],
+    },
 });

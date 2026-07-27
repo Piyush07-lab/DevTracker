@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
     entry: ["src/server.ts"],
@@ -9,9 +9,9 @@ export default defineConfig({
     sourcemap: true,
     clean: true,
     dts: false,
-    splitting: false,
     treeshake: true,
     minify: false,
-    bundle: true,
-    skipNodeModulesBundle: true
+    deps: {
+        neverBundle: true
+    }
 });
