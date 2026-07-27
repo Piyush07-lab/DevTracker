@@ -482,3 +482,110 @@ Verified with:
 
 ```bash
 pnpm --filter @devtracker/backend list @prisma/adapter-better-sqlite3
+
+## 2026-07-27
+
+### Task
+
+Configure Prisma SQLite Adapter
+
+### Completed
+
+- Configured Prisma 7 to use `@prisma/adapter-better-sqlite3`.
+- Created a SQLite adapter using `DATABASE_URL` with a development fallback.
+- Updated the Prisma client to use `new PrismaClient({ adapter })`.
+- Retained the global Prisma singleton pattern for development.
+- Verified successful TypeScript compilation.
+
+### Files
+
+- apps/backend/src/lib/prisma.ts
+
+### Verification
+
+Verified with:
+
+```bash
+pnpm --filter @devtracker/backend typecheck
+```
+
+Result:
+
+```text
+$ tsc --noEmit
+Done
+```
+
+### Remaining
+
+- Integrate the configured Prisma client throughout the backend.
+- Implement `POST /v1/install`.
+- Implement install token generation and validation middleware.
+
+### Notes
+
+This completes the runtime configuration required by Prisma 7's `prisma-client` generator for SQLite. The backend is now configured to construct `PrismaClient` with the required driver adapter.
+
+## 2026-07-27
+
+### Task
+Implement POST /v1/install
+
+### Completed
+- Implemented POST /v1/install endpoint.
+- Integrated shared Prisma singleton.
+- Created default Account when one does not exist.
+- Created Installation records for each install request.
+- Generated and stored install tokens.
+- Returned installationId and install token in the API response.
+
+### Files
+- apps/backend/src/routes/v1/install.ts
+
+### Verification
+- Backend starts successfully.
+- POST /v1/install returns HTTP 201.
+- installationId returned in response.
+- Account created only once.
+- Installation created per request.
+- InstallToken created per request.
+- `pnpm --filter @devtracker/backend typecheck` passed.
+
+### Remaining
+- Implement token hashing.
+- Implement token validation middleware.
+- Implement authenticated ingest endpoints.
+
+### Notes
+- Tokens are currently stored in plaintext as an intentional temporary implementation. Hashing will be added in the next task.
+
+## 2026-07-27
+
+### Task
+Implement install token hashing
+
+### Completed
+- Replaced plaintext install token storage with SHA-256 hashing.
+- Continued generating opaque install tokens using `randomUUID()`.
+- Stored only the SHA-256 digest in the database.
+- Preserved the existing API contract by returning the original token to the client.
+- Verified database persistence contains only hashed tokens.
+
+### Files
+- apps/backend/src/routes/v1/install.ts
+
+### Verification
+- `pnpm --filter @devtracker/backend typecheck`
+- `POST /v1/install` returns HTTP 201.
+- API response contains the original install token.
+- Database stores only the SHA-256 hash.
+- Install endpoint continues to function correctly.
+
+### Remaining
+- Implement install token validation middleware.
+- Implement the first authenticated endpoint.
+- Add health endpoint.
+
+### Notes
+- Password hashing will continue to use bcrypt during the authentication phase.
+- Install tokens use SHA-256 because they are high-entropy server-generated secrets and do not require adaptive password hashing.

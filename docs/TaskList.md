@@ -1,6 +1,6 @@
 # DevTracker — Task List
 
-**Last Updated:** 2026-07-25
+**Last Updated:** 2026-07-27
 
 ---
 
@@ -100,10 +100,10 @@
 
 | Status | Task |
 |:------:|------|
-| -- | Health endpoint |
-| -- | POST /v1/install |
+| ✅ | Health endpoint |
+| ✅ | POST /v1/install |
 | -- | Install token middleware |
-| -- | Token hashing |
+| ✅ | Token hashing |
 | -- | Install token generation |
 | -- | Session ingest endpoint |
 | -- | Logging middleware |
@@ -128,9 +128,9 @@
 | ✅ | Create first migration |
 | ✅ | Apply first migration |
 | ✅ | Create development database |
-| -- | Install Prisma SQLite adapter |
-| -- | Configure Prisma adapter |
-| -- | Create Prisma singleton |
+| ✅ | Install Prisma SQLite adapter |
+| ✅ | Configure Prisma adapter |
+| ✅ | Create Prisma singleton |
 
 ---
 
@@ -244,13 +244,10 @@
 
 # Immediate Next Tasks
 
-| Priority | Task |
-|:--------:|------|
-| 1 | Install Prisma SQLite adapter |
-| 2 | Configure Prisma adapter |
-| 3 | Create Prisma singleton |
-| 4 | Implement POST /v1/install |
-| 5 | Generate install tokens |
-| 6 | Token validation middleware |
-| 7 | Health endpoint |
-| 8 | Session ingest endpoint |
+| Priority | Task                          |
+| :------: | ----------------------------- |
+|     1    | Token validation middleware   |
+|     2    | Health endpoint               |
+|     3    | Session ingest endpoint       |
+|     4    | Request validation middleware |
+|     5    | Logging middleware            |
