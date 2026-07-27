@@ -457,3 +457,28 @@ The project now has:
 - Foundation not ready for backend persistence and API development
 
 This completes the database initialization milestone and unblocks implementation of the backend data layer, install bootstrap endpoint, and session ingestion pipeline.
+
+## 2026-07-27
+
+### Task
+
+Install Prisma SQLite Adapter
+
+### Completed
+
+- Installed `@prisma/adapter-better-sqlite3` for the backend workspace.
+- Verified successful installation using `pnpm list`.
+- Confirmed the dependency is recorded in `apps/backend/package.json`.
+- Prepared the project for Prisma 7 driver adapter integration.
+
+### Files
+
+- apps/backend/package.json
+- pnpm-lock.yaml
+
+### Verification
+
+Verified with:
+
+```bash
+pnpm --filter @devtracker/backend list @prisma/adapter-better-sqlite3
