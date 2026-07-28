@@ -589,3 +589,43 @@ Implement install token hashing
 ### Notes
 - Password hashing will continue to use bcrypt during the authentication phase.
 - Install tokens use SHA-256 because they are high-entropy server-generated secrets and do not require adaptive password hashing.
+
+## 2026-07-28
+
+### Task
+
+Implement install token validation middleware
+
+### Completed
+
+- Implemented Bearer token authentication middleware.
+- Validated Authorization header format.
+- Resolved install tokens by SHA-256 hash.
+- Rejected missing, malformed, invalid, and expired tokens.
+- Attached the resolved accountId to the Express request.
+- Introduced Express Request type augmentation for accountId.
+- Enforced server-side identity resolution in accordance with DC-9.
+
+### Files
+
+- apps/backend/src/middleware/installToken.ts
+- apps/backend/src/types/express.d.ts
+
+### Verification
+
+- Missing Authorization header returns HTTP 401.
+- Invalid Bearer format returns HTTP 401.
+- Unknown token returns HTTP 401.
+- Expired token returns HTTP 401.
+- Valid token resolves the correct accountId.
+- Route handlers receive the resolved accountId.
+- No client-supplied accountId is used.
+- `pnpm --filter @devtracker/backend typecheck` passed.
+
+### Remaining
+
+- Implement the first authenticated session ingest endpoint.
+
+### Notes
+
+The authentication boundary now resolves identity entirely on the server. Downstream routes consume `req.accountId` and never trust client-supplied account identifiers.

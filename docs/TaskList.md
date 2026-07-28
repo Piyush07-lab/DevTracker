@@ -102,9 +102,9 @@
 |:------:|------|
 | ✅ | Health endpoint |
 | ✅ | POST /v1/install |
-| -- | Install token middleware |
+| ✅ | Install token middleware |
 | ✅ | Token hashing |
-| -- | Install token generation |
+| ✅ | Install token generation |
 | -- | Session ingest endpoint |
 | -- | Logging middleware |
 | -- | Error handling middleware |

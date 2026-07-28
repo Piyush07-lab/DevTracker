@@ -53,7 +53,9 @@ export async function installTokenMiddleware(
             });
         }
 
-        req.accountId = installToken.accountId;
+        req.auth = {
+            accountId: installToken.accountId,
+        };
 
         next();
 

@@ -42,6 +42,9 @@ importers:
 
   apps/backend:
     dependencies:
+      '@devtracker/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@prisma/adapter-better-sqlite3':
         specifier: ^7.9.0
         version: 7.9.0
