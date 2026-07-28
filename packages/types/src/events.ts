@@ -94,6 +94,8 @@ export const SessionPayloadSchema = z.object({
     events: z.array(DevTrackerEventSchema)
 });
 
+
+
 export interface SessionPayload {
     startTime: number;
     lastActivity: number;
@@ -101,5 +103,21 @@ export interface SessionPayload {
     events: DevTrackerEvent[];
 }
 
+export const InstallRequestSchema = z.object({});
+
+export interface InstallRequest { }
+
+export const InstallResponseSchema = z.object({
+    installationId: z.string().uuid(),
+    token: z.string().min(1),
+});
+
+export interface InstallResponse {
+    installationId: string;
+    token: string;
+}
+
+export type InstallRequestDTO = z.infer<typeof InstallRequestSchema>;
+export type InstallResponseDTO = z.infer<typeof InstallResponseSchema>;
 export type DevTrackerEventDTO = z.infer<typeof DevTrackerEventSchema>;
 export type SessionPayloadDTO = z.infer<typeof SessionPayloadSchema>;
