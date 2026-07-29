@@ -658,3 +658,32 @@ Repair extension wiring after shared type migration
 
 ### Notes
 - Extension wiring is now aligned with the shared session contract.
+
+## 2026-07-29
+
+### Task
+
+Complete SDK integration and repair SessionPayload pipeline.
+
+### Completed
+
+- Added session event collection to SessionManager.
+- Repaired Session → SessionPayload generation.
+- Integrated SessionProcessor with the shared SDK.
+- Added Axios as the SDK transport dependency.
+- Verified successful monorepo build.
+
+### Verification
+
+- `pnpm turbo build --force` completed successfully.
+- All workspace packages built successfully.
+
+### Remaining
+
+- Implement POST /v1/install.
+- Implement installation token middleware.
+- Begin authenticated backend session ingestion.
+
+### Next Task
+
+Backend installation bootstrap.

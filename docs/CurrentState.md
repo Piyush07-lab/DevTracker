@@ -32,15 +32,16 @@ If this document conflicts with the Development Phases or Phase-DC documents, th
 |-------|--------|
 | Monorepo | ✅ Complete |
 | Shared Packages | ✅ Complete |
-| VS Code Extension | ✅ Functionally Complete |
+| VS Code Extension | ✅ Complete |
 | Backend Scaffold | ✅ Complete |
 | Shared Validation | ✅ Complete |
+| SDK | ✅ Complete |
 | Prisma Integration | ✅ Complete |
 | Initial Database Schema | ✅ Complete |
 | First Migration | ✅ Complete |
 | Install Bootstrap API | ⏳ Not Started |
 | Authentication | ⏳ Not Started |
-| Session Ingestion | ⏳ Not Started |
+| Session Ingestion (Backend) | ⏳ Not Started |
 | Dashboard | ⏳ Not Started |
 
 ---
@@ -61,7 +62,7 @@ Deliverable achieved.
 
 Status:
 
-✅ Functionally Complete
+✅ Complete
 
 Implemented:
 
@@ -70,11 +71,15 @@ Implemented:
 - Idle detection
 - Path normalization
 - Shared event contracts
-- Heartbeat/session generation
+- SessionPayload generation
+- Session event collection
+- SDK integration
 - esbuild bundling
-- Unit tests for SessionManager
+- SessionManager unit tests
 
-Remaining work for this phase has been intentionally deferred to Phase 5 per Phase-DC.
+Remaining work intentionally deferred to later phases:
+
+- Readonly Session clone improvement (Phase 5)
 
 ---
 
@@ -230,6 +235,22 @@ This is an implementation task, not an architectural blocker.
 
 ---
 
+# SDK Status
+
+Status:
+
+✅ Complete
+
+Implemented
+
+- Axios transport
+- Install bootstrap client
+- Session upload client
+- Shared Zod validation
+- Shared wire contracts
+
+The SDK is now responsible for all HTTP communication between the extension and backend.
+
 # Technology Snapshot
 
 Backend
@@ -270,6 +291,8 @@ Completed
 - Shared packages
 - Extension event system
 - Session engine foundation
+- SessionPayload pipeline
+- SDK transport layer
 - Shared validation contracts
 - Backend scaffold
 - Prisma setup
@@ -293,17 +316,20 @@ Not Started
 
 # Immediate Next Task
 
-Implement the backend database integration.
+Implement the backend installation bootstrap.
 
 Recommended order:
 
-1. Install and configure the Prisma SQLite adapter.
-2. Create the Prisma client singleton.
-3. Implement `POST /v1/install`.
-4. Implement install-token resolution middleware.
+1. Implement POST /v1/install.
+2. Generate installation token.
+3. Persist installation and token.
+4. Implement install-token middleware.
 5. Implement the first authenticated endpoint.
 
-This order follows the locked-core decisions established during Phase-DC.
+After installation bootstrap is complete:
+
+6. Verify end-to-end extension registration.
+7. Begin backend session ingestion.
 
 ---
 
