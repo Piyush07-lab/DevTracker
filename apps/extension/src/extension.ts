@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { EventDispatcher } from "./dispatcher";
-import { 
+import {
     registerActiveEditorListener,
     registerDocumentOpenListener,
     registerDocumentCloseListener,
@@ -10,13 +10,14 @@ import {
     LoggerProcessor,
     SessionProcessor
 } from "./processors";
+import { DevTrackerClient } from "@devtracker/sdk";
 
 export function activate(context: vscode.ExtensionContext): void {
     console.log("DevTracker activated.");
 
     const dispatcher = new EventDispatcher();
-
-    const sessionProcessor = new SessionProcessor();
+    const client = new DevTrackerClient("http://localhost:3000");
+    const sessionProcessor = new SessionProcessor(client);
 
     dispatcher.register(new LoggerProcessor());
     dispatcher.register(sessionProcessor);
@@ -46,5 +47,3 @@ export function activate(context: vscode.ExtensionContext): void {
     registerDocumentSaveListener(context, dispatcher);
     registerDocumentCloseListener(context, dispatcher);
 }
-
-export function deactivate(): void { }

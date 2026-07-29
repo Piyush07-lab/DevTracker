@@ -1,17 +1,14 @@
-import { defineConfig } from "tsdown";
+import baseConfig from "../../tsdown.config.ts";
 
-export default defineConfig({
+export default ({
+    ...baseConfig,
     entry: ["src/server.ts"],
     format: ["esm"],
     platform: "node",
-    target: "node22",
     outDir: "dist",
-    sourcemap: true,
-    clean: true,
     dts: false,
-    treeshake: true,
     minify: false,
     deps: {
-        neverBundle: true
+        neverBundle: [],
     }
 });

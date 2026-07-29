@@ -33,7 +33,8 @@
         "test:vscode": "vscode-test"
     },
     "dependencies": {
-        "@devtracker/types": "workspace:*"
+        "@devtracker/types": "workspace:*",
+        "@devtracker/sdk": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^24.13.3",

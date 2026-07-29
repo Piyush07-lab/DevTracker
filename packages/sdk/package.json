@@ -5,17 +5,30 @@
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.mts",
+                "default": "./dist/index.mjs"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
+        }
+    },
     "files": [
         "dist"
     ],
     "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "dev": "tsc -w -p tsconfig.json",
+        "build": "tsdown",
+        "dev": "tsdown --watch",
         "typecheck": "tsc --noEmit",
         "clean": "node --eval \"fs.rmSync('dist',{recursive:true,force:true})\""
     },
     "dependencies": {
         "@devtracker/types": "workspace:*",
-        "@devtracker/utils": "workspace:*"
+        "@devtracker/utils": "workspace:*",
+        "axios": "^1.18.1"
     }
 }

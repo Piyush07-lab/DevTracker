@@ -28,12 +28,15 @@ export class SessionManager {
             this.currentSession = {
                 startTime: now,
                 lastActivity: now,
-                files: new Set()
+                files: new Set(),
+                events: []
             };
         }
 
         this.currentSession.lastActivity = now;
         this.currentSession.files.add(event.file);
+        this.currentSession.events.push(event);
+
         return completedSession;
     }
 

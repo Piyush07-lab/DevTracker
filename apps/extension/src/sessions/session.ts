@@ -1,3 +1,4 @@
+import { DevTrackerEvent } from "../dispatcher";
 /**
  * Internal, in-memory session shape used only inside the extension while
  * a session is actively being built up by SessionManager. `files` is a
@@ -8,8 +9,10 @@
  * from this internal shape to a `SessionPayload` (Set -> string[]) happens
  * exactly once, when a session completes, not on every event.
  */
+
 export interface Session {
     startTime: number;
     lastActivity: number;
     files: Set<string>;
+    events: DevTrackerEvent[];
 }
