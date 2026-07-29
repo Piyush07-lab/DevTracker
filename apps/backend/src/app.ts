@@ -3,6 +3,7 @@ import  healthRouter  from "./routes/health.js";
 import v1Router from "./routes/v1/index.js";
 
 
+
 const app: Express = express();
 
 app.use(express.json());

@@ -687,3 +687,41 @@ Complete SDK integration and repair SessionPayload pipeline.
 ### Next Task
 
 Backend installation bootstrap.
+
+## 2026-07-29 20:40
+
+### Task
+Implement install bootstrap endpoint (`POST /v1/install`)
+
+### Completed
+- Added shared install request/response schemas to `@devtracker/types`.
+- Implemented Route → Controller → Service architecture for the install endpoint.
+- Implemented automatic default `Account` provisioning.
+- Implemented `Installation` creation.
+- Implemented secure install token generation using `randomUUID()`.
+- Implemented SHA-256 hashing before token persistence.
+- Persisted install tokens with expiration.
+- Added response validation using `InstallResponseSchema`.
+- Resolved schema validation failure caused by UUID/CUID mismatch.
+- Successfully verified the endpoint through an HTTP request.
+
+### Files
+- `packages/types/src/events.ts`
+- `apps/backend/src/routes/v1/install.ts`
+- `apps/backend/src/controllers/install.controller.ts`
+- `apps/backend/src/services/install.service.ts`
+
+### Verification
+- `pnpm turbo build` completed successfully.
+- `POST /v1/install` returned `201 Created`.
+- Account, Installation, and InstallToken records were created successfully.
+- Install token hash was persisted while returning the plaintext token only once.
+
+### Remaining
+- Implement install-token authentication middleware.
+- Protect authenticated backend endpoints.
+- Begin backend session ingestion (`POST /v1/sessions`).
+
+### Notes
+- Refactored endpoint into Route → Controller → Service architecture while keeping the implementation lightweight.
+- Updated the install response contract to align with the project's identifier format.

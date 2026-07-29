@@ -42,7 +42,6 @@ export const DevTrackerEventSchema = z.discriminatedUnion("type", [
 ]);
 
 
-
 export interface ActiveEditorEvent extends BaseEvent {
     type: "editor.active";
     file: string;
@@ -69,6 +68,7 @@ export type DevTrackerEvent =
     | DocumentSaveEvent
     | DocumentCloseEvent;
 
+
 /**
  * Wire-shape session — crosses extension -> SDK -> backend once a session
  * is finalized (SessionManager.endCurrentSession()).
@@ -94,8 +94,6 @@ export const SessionPayloadSchema = z.object({
     events: z.array(DevTrackerEventSchema)
 });
 
-
-
 export interface SessionPayload {
     startTime: number;
     lastActivity: number;
@@ -105,10 +103,8 @@ export interface SessionPayload {
 
 export const InstallRequestSchema = z.object({});
 
-export interface InstallRequest { }
-
 export const InstallResponseSchema = z.object({
-    installationId: z.string().uuid(),
+    installationId: z.string().cuid(),
     token: z.string().min(1),
 });
 
