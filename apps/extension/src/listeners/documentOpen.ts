@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { EventDispatcher } from "../dispatcher";
-import { toTrackedPath } from "../paths";
+import { getProjectName, toTrackedPath } from "../paths";
+import type { DevTrackerEvent } from "../dispatcher";
 
 /**
  * `file` is workspace-relative (e.g. "src/index.ts"), or
@@ -14,11 +15,17 @@ export function registerDocumentOpenListener(
 ): void {
 
     const disposable = vscode.workspace.onDidOpenTextDocument((document) => {
-        dispatcher.dispatch({
+
+        const project = getProjectName(document.uri);
+
+        const event: DevTrackerEvent = {
             type: "document.open",
             timestamp: Date.now(),
-            file: toTrackedPath(document.uri)
-        });
+            file: toTrackedPath(document.uri),
+            ...(project !== undefined ? { project } : {}),
+        };
+
+        dispatcher.dispatch(event);
     });
 
     context.subscriptions.push(disposable);

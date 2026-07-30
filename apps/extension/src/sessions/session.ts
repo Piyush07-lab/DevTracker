@@ -15,5 +15,5 @@ export interface Session {
     lastActivity: number;
     files: Set<string>;
     events: DevTrackerEvent[];
-    project?: string;
+    project?: string | undefined;
 }

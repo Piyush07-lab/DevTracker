@@ -8,7 +8,14 @@ export class SessionManager {
     private static readonly IDLE_TIMEOUT = 5 * 60 * 1000;
 
     public getCurrentSession(): Readonly<Session> | null {
-        return this.currentSession;
+        if (!this.currentSession) {
+            return null;
+        }
+
+        return {
+            ...this.currentSession,
+            files: new Set(this.currentSession.files),
+        };
     }
 
     handle(event: DevTrackerEvent): Session | null {
@@ -29,7 +36,10 @@ export class SessionManager {
                 startTime: now,
                 lastActivity: now,
                 files: new Set(),
-                events: []
+                events: [],
+                ...(event.project !== undefined
+                    ? { project: event.project }
+                    : {}),
             };
         }
 

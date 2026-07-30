@@ -818,3 +818,43 @@ Implement thin authenticated session ingestion endpoint (`POST /v1/sessions`)
 
 ### Notes
 - This milestone completes the thin authenticated ingestion endpoint defined for the early Phase 3 backend work. Persistence will be implemented in the next task.
+
+## 2026-07-30 13:57 UTC
+
+### Task
+Resolve `exactOptionalPropertyTypes` build failures in the extension package.
+
+### Completed
+- Fixed `Readonly<Set>` encapsulation by preventing external mutation of the session file set.
+- Updated extension event creation to correctly omit optional `project` when undefined instead of assigning `project: undefined`.
+- Applied the optional property fix consistently across event listeners and session payload creation.
+- Verified `SessionManager`, session processing, and shared event types for compatibility with `exactOptionalPropertyTypes`.
+- Reviewed and validated the shared event schemas and interfaces.
+- Successfully restored a consistent implementation after investigating a potential `z.infer` refactor.
+- Resolved all TypeScript build errors.
+- All unit tests passed.
+- Full project build completed successfully.
+
+### Files
+- `apps/extension/src/session/SessionManager.ts`
+- `apps/extension/src/session/session.ts`
+- `apps/extension/src/processors/sessionProcessor.ts`
+- `apps/extension/src/listeners/activeEditor.ts`
+- `apps/extension/src/listeners/documentOpen.ts`
+- `apps/extension/src/listeners/documentSave.ts`
+- `apps/extension/src/listeners/documentClose.ts`
+- `packages/types/src/events.ts`
+- Associated extension tests
+
+### Verification
+- `pnpm test` ✅
+- `pnpm build` ✅
+- No remaining TypeScript errors related to `exactOptionalPropertyTypes`.
+
+### Remaining
+- Continue Phase DC implementation tasks.
+- Consider migrating shared types to `z.infer` in a future dedicated refactor if runtime schemas are intended to be the single source of truth.
+
+### Notes
+- The final compiler error originated from optional property semantics introduced by `exactOptionalPropertyTypes`, not from the shared schema definitions.
+- A broad schema/type refactor was investigated but intentionally deferred after confirming the existing implementation was correct and the build passed without it.

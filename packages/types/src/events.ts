@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export interface BaseEvent {
     timestamp: number;
-    project?: string;
+    project?: string | undefined;
 }
 
 /**
@@ -102,7 +102,7 @@ export interface SessionPayload {
     lastActivity: number;
     files: string[];
     events: DevTrackerEvent[];
-    project?: string;
+    project?: string | undefined;
 }
 
 export const InstallRequestSchema = z.object({});

@@ -6,17 +6,9 @@ import * as vscode from "vscode";
  * transmit to the backend/public API.
  *
  * Workspace-relative when the file is inside an open workspace folder.
- * Falls back to a basename-only tag when it isn't — vscode.workspace
- * .asRelativePath() silently returns the absolute path in that case,
- * which is exactly the leak this function exists to prevent, so we
- * check membership explicitly before calling it.
- *
- * This runs at the point of capture (inside each listener), not at the
- * dispatcher or backend — once a raw absolute path leaves this function,
- * it's already been dispatched, logged, and possibly cached locally.
+ * Falls back to a basename-only tag when it isn't.
  */
 export function toTrackedPath(uri: vscode.Uri): string {
-
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
 
     if (!workspaceFolder) {
@@ -25,9 +17,25 @@ export function toTrackedPath(uri: vscode.Uri): string {
 
     return vscode.workspace
         .asRelativePath(uri, false)
-        .replace(/\\/g, "/"); // normalize separators so Windows/macOS/Linux emit identical shapes
+        .replace(/\\/g, "/");
 }
 
-export function getProjectName(uri: vscode.Uri): string {
+/**
+ * Returns the workspace/project name for the given file.
+ * This is used to populate SessionPayload.project.
+ *
+ * Returns undefined for files that are not part of a workspace.
+ */
+export function getProjectName(uri: vscode.Uri): string | undefined {
     return vscode.workspace.getWorkspaceFolder(uri)?.name;
+}
+
+/**
+ * Returns the workspace folder itself when additional metadata
+ * (URI, path, index, etc.) is needed by callers.
+ */
+export function getWorkspaceFolder(
+    uri: vscode.Uri,
+): vscode.WorkspaceFolder | undefined {
+    return vscode.workspace.getWorkspaceFolder(uri);
 }

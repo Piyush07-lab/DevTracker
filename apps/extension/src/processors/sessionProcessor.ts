@@ -20,7 +20,10 @@ export class SessionProcessor implements EventProcessor {
             startTime: completed.startTime,
             lastActivity: completed.lastActivity,
             files: Array.from(completed.files),
-            events: completed.events
+            events: completed.events,
+            ...(completed.project !== undefined
+                ? { project: completed.project }
+                : {}),
         };
 
         const validated = SessionPayloadSchema.parse(payload);

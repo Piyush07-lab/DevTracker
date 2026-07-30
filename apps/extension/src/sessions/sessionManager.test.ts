@@ -7,9 +7,15 @@ import type { DevTrackerEvent } from "../dispatcher";
 function makeEvent(
     timestamp: number,
     file = "test.ts",
-    type = "change"
+    type = "change",
+    project = "workspace-a",
 ): DevTrackerEvent {
-    return { type, timestamp, file };
+    return {
+        type,
+        timestamp,
+        file,
+        project,
+    };
 }
 
 // --- Tests ---
@@ -38,6 +44,17 @@ describe("SessionManager", () => {
             expect(session!.startTime).toBe(1000);
             expect(session!.lastActivity).toBe(1000);
             expect(session!.files).toEqual(new Set(["test.ts"]));
+            expect(session!.project).toBe("workspace-a");
+        });
+
+        it("retains the project from the first event", () => {
+            manager.handle(makeEvent(1000, "a.ts", "change", "workspace-a"));
+
+            manager.handle(makeEvent(2000, "b.ts", "change", "workspace-b"));
+
+            const session = manager.getCurrentSession()!;
+
+            expect(session.project).toBe("workspace-a");
         });
     });
 
@@ -97,12 +114,14 @@ describe("SessionManager", () => {
             expect(result!.startTime).toBe(startTime);
             expect(result!.lastActivity).toBe(startTime);
             expect(result!.files).toEqual(new Set(["first.ts"]));
+            expect(result!.project).toBe("workspace-a");
 
             const newSession = manager.getCurrentSession();
             expect(newSession).not.toBeNull();
             expect(newSession!.startTime).toBe(pastTimeout);
             expect(newSession!.lastActivity).toBe(pastTimeout);
             expect(newSession!.files).toEqual(new Set(["second.ts"]));
+            expect(newSession!.project).toBe("workspace-a");
         });
     });
 
@@ -127,17 +146,22 @@ describe("SessionManager", () => {
             session!.files = new Set();
         });
 
-        it("demonstrates internal Set is mutable through returned reference (shallow Readonly)", () => {
-            manager.handle(makeEvent(100, "file1.ts"));
-            const session = manager.getCurrentSession();
-            // Mutate the Set via returned reference
-            session!.files.add("injected.ts");
-            // Trigger another event to get the session again
-            manager.handle(makeEvent(200, "file2.ts"));
-            const sessionAfter = manager.getCurrentSession();
-            // Assert that the injected file is present, confirming the Set is not truly read-only
-            expect(sessionAfter!.files.has("injected.ts")).toBe(true);
-            // This shows that despite Readonly<Session>, the returned object's Set is still mutable.
+        it("returns a defensive copy of the session files Set", () => {
+            // arrange
+            manager.handle(makeEvent(100, "test.ts"));
+
+            const session = manager.getCurrentSession()!;
+
+            // mutate the returned object
+            (session.files as Set<string>).add("evil.ts");
+
+            // internal state must remain unchanged
+            const current = manager.getCurrentSession()!;
+
+            expect(current.files.has("evil.ts")).toBe(false);
+
+            // original tracked file(s) should still exist
+            expect(current.files.size).toBe(1);
         });
     })
 
