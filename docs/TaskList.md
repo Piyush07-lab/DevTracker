@@ -49,7 +49,7 @@
 | ✅ | Path normalization |
 | ✅ | SessionManager unit tests |
 | ✅ | esbuild bundling |
-| -- | Fix shallow Readonly<Set> issue (Phase 5) |
+| ✅ | Fix shallow Readonly<Set> issue (Phase 5) |
 
 ---
 
@@ -92,7 +92,7 @@
 | ✅ | Shared Zod schemas |
 | ✅ | Shared DTOs |
 | ✅ | Shared validation layer |
-| -- | Request validation middleware |
+| ✅ | Request validation middleware |
 
 ---
 
@@ -141,9 +141,9 @@
 | ✅ | Account model |
 | ✅ | Installation model |
 | ✅ | InstallToken model |
-| -- | Session model |
-| -- | Project model |
-| -- | Activity model |
+| ✅ | Session model |
+| ✅ | Project model |
+| ✅ | Activity model |
 | -- | QuarantinedEvents model |
 
 ---
@@ -169,7 +169,7 @@
 | -- | Session duration |
 | -- | Language aggregation |
 | -- | Project aggregation |
-| -- | Fix shallow Readonly<Set> |
+| ✅ | Fix shallow Readonly<Set> |
 | -- | Queue completed sessions |
 
 ---
@@ -244,8 +244,8 @@
 
 # Immediate Next Tasks
 
-| Priority | Task                                  |
-| :------: | ------------------------------------- |
+| Priority | Task                                   |
+| :------: | -------------------------------------- |
 |     1    | Implement session persistence          |
 |     2    | Create Session model                   |
 |     3    | Create Activity model                  |
@@ -253,4 +253,6 @@
 |     5    | Implement quarantined_events           |
 |     6    | Logging middleware                     |
 |     7    | Error handling middleware              |
-|     8    | Request validation middleware          |
+|     8    | Implement repository layer             |
+|     9    |                                        |
+|    10    |                                        |
