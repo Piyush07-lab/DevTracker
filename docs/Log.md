@@ -784,3 +784,37 @@ Implement install-token authentication middleware
 
 ### Notes
 - Authentication is centralized in reusable middleware rather than duplicated across controllers.
+
+## 2026-07-30 11:52
+
+### Task
+Implement thin authenticated session ingestion endpoint (`POST /v1/sessions`)
+
+### Completed
+- Implemented `POST /v1/sessions`.
+- Protected the endpoint with `installTokenMiddleware`.
+- Validated incoming requests using the shared `SessionPayloadSchema`.
+- Resolved authenticated identity through `req.auth.accountId`.
+- Registered the session router in the v1 route index.
+- Established the initial backend ingestion boundary for session payloads.
+
+### Files
+- apps/backend/src/routes/v1/session.ts
+- apps/backend/src/routes/v1/index.ts
+
+### Verification
+- Session router successfully registered.
+- Endpoint protected by install-token authentication.
+- Invalid payloads return validation errors.
+- Valid payloads are accepted.
+- Shared contracts are used for request validation.
+- Authentication continues to rely on server-side account resolution.
+
+### Remaining
+- Replace the temporary endpoint implementation with persistence.
+- Create and integrate the Prisma session persistence layer.
+- Implement quarantined event persistence for rejected payloads.
+- Connect the SDK to the authenticated `/v1/sessions` endpoint.
+
+### Notes
+- This milestone completes the thin authenticated ingestion endpoint defined for the early Phase 3 backend work. Persistence will be implemented in the next task.

@@ -25,6 +25,9 @@ model Account {
 
   installations Installation[]
   installTokens InstallToken[]
+  projects      Project[]
+  sessions      Session[]
+  activities    Activity[]
 }
 
 model Installation {
@@ -55,4 +58,56 @@ model InstallToken {
 
   @@index([accountId])
   @@index([expiresAt])
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  accountId String
+
+  name      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account  Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  sessions Session[]
+
+  @@unique([accountId, name])
+  @@index([accountId])
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  accountId   String
+  projectId   String?
+
+  startedAt   DateTime
+  endedAt     DateTime
+  durationMs  Int
+
+  createdAt   DateTime @default(now())
+
+  account   Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  project   Project?   @relation(fields: [projectId], references: [id])
+  activities Activity[]
+
+  @@index([accountId])
+  @@index([projectId])
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  accountId   String
+  sessionId   String
+
+  eventType   String
+  filePath    String
+  language    String
+  timestamp   DateTime
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([sessionId])
 }

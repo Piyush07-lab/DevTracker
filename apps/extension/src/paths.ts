@@ -27,3 +27,7 @@ export function toTrackedPath(uri: vscode.Uri): string {
         .asRelativePath(uri, false)
         .replace(/\\/g, "/"); // normalize separators so Windows/macOS/Linux emit identical shapes
 }
+
+export function getProjectName(uri: vscode.Uri): string {
+    return vscode.workspace.getWorkspaceFolder(uri)?.name;
+}

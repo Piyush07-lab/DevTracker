@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export interface BaseEvent {
     timestamp: number;
+    project?: string;
 }
 
 /**
@@ -11,7 +12,8 @@ export interface BaseEvent {
  */
 
 export const BaseEventSchema = z.object({
-    timestamp: z.number().int().nonnegative()
+    timestamp: z.number().int().nonnegative(),
+    project: z.string().min(1).optional()
 });
 
 export const ActiveEditorEventSchema = BaseEventSchema.extend({
@@ -91,7 +93,8 @@ export const SessionPayloadSchema = z.object({
     startTime: z.number().int().nonnegative(),
     lastActivity: z.number().int().nonnegative(),
     files: z.array(z.string()),
-    events: z.array(DevTrackerEventSchema)
+    events: z.array(DevTrackerEventSchema),
+    project: z.string().min(1).optional()
 });
 
 export interface SessionPayload {
@@ -99,6 +102,7 @@ export interface SessionPayload {
     lastActivity: number;
     files: string[];
     events: DevTrackerEvent[];
+    project?: string;
 }
 
 export const InstallRequestSchema = z.object({});

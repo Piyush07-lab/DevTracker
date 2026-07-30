@@ -1,6 +1,6 @@
 # DevTracker — Task List
 
-**Last Updated:** 2026-07-27
+**Last Updated:** 2026-07-30
 
 ---
 
@@ -105,7 +105,7 @@
 | ✅ | Install token middleware |
 | ✅ | Token hashing |
 | ✅ | Install token generation |
-| -- | Session ingest endpoint |
+| ✅ | Session ingest endpoint |
 | -- | Logging middleware |
 | -- | Error handling middleware |
 | -- | Versioned API routing |
@@ -244,10 +244,13 @@
 
 # Immediate Next Tasks
 
-| Priority | Task                          |
-| :------: | ----------------------------- |
-|     1    | Token validation middleware   |
-|     2    | Health endpoint               |
-|     3    | Session ingest endpoint       |
-|     4    | Request validation middleware |
-|     5    | Logging middleware            |
+| Priority | Task                                  |
+| :------: | ------------------------------------- |
+|     1    | Implement session persistence          |
+|     2    | Create Session model                   |
+|     3    | Create Activity model                  |
+|     4    | Create Project model                   |
+|     5    | Implement quarantined_events           |
+|     6    | Logging middleware                     |
+|     7    | Error handling middleware              |
+|     8    | Request validation middleware          |
