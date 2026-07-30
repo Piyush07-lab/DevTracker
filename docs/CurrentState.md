@@ -1,14 +1,12 @@
 # DevTracker — Current State
 
-**Last Updated:** 2026-07-25
+**Last Updated:** 2026-07-30
 
 ---
 
 # Purpose
 
-This document represents the current implementation status of the project.
-
-Unlike the development phases document, which describes the roadmap, this file records the project's actual state so future development sessions begin with accurate context.
+This document records the repository's current implementation status so future development starts from the actual codebase state, not the roadmap.
 
 ---
 
@@ -26,6 +24,14 @@ If this document conflicts with the Development Phases or Phase-DC documents, th
 
 ---
 
+# Repository Overview
+
+DevTracker is a local-first developer activity tracker built as a pnpm/Turbo monorepo. It captures coding activity from a VS Code extension, sends it through a shared SDK to an Express backend, stores data with Prisma, and will expose analytics through a React dashboard.
+
+The architecture is designed to support SQLite for development and PostgreSQL for production without changing core application logic.
+
+---
+
 # Overall Status
 
 | Area | Status |
@@ -39,10 +45,13 @@ If this document conflicts with the Development Phases or Phase-DC documents, th
 | Prisma Integration | ✅ Complete |
 | Initial Database Schema | ✅ Complete |
 | First Migration | ✅ Complete |
-| Install Bootstrap API | ⏳ Not Started |
-| Authentication | ⏳ Not Started |
-| Session Ingestion (Backend) | ⏳ Not Started |
+| Install Bootstrap API | ✅ Complete |
+| Install Token Middleware | ✅ Complete |
+| Session Ingestion (Backend) | ✅ Thin endpoint complete |
 | Dashboard | ⏳ Not Started |
+| Persistence Layer | ⏳ Not Started |
+| Authentication | ⏳ Not Started |
+| Analytics | ⏳ Not Started |
 
 ---
 
@@ -97,15 +106,18 @@ Completed:
 - Build tooling
 - Shared validation layer
 - Project structure
+- `/v1/install`
+- Install token middleware
+- `POST /v1/sessions` thin authenticated endpoint
 
 Not yet implemented:
 
-- `/v1/install`
-- Token middleware
-- Health endpoint
+- Persistence layer for sessions and related entities
 - Logging middleware
-- Error handling
-- Session ingest endpoints
+- Error handling middleware
+- Health endpoint hardening if needed
+- Repository layer
+- Quarantine persistence for rejected payloads
 
 ---
 
@@ -123,21 +135,18 @@ Completed:
 - Initial schema
 - Initial migration
 - Prisma Client generation
-
-Implemented models:
-
-- Account
-- Installation
-- InstallToken
+- Account model
+- Installation model
+- InstallToken model
 
 Pending:
 
-- Repository layer
-- Database integration inside Express
 - Session tables
 - Project tables
 - Activity tables
 - Quarantine tables
+- Repository layer
+- Database integration inside Express
 
 ---
 
@@ -188,13 +197,13 @@ Future authentication extends this mechanism rather than replacing it.
 
 Current migration history:
 
-```
+```text
 init
 ```
 
 Development database:
 
-```
+```text
 apps/backend/prisma/dev.db
 ```
 
@@ -212,7 +221,7 @@ No session persistence exists yet.
 
 Current Prisma version:
 
-```
+```text
 7.9.0
 ```
 
@@ -229,9 +238,7 @@ Important note:
 
 Prisma 7's `prisma-client` generator requires a database driver adapter when constructing `PrismaClient`.
 
-The backend has not yet integrated the generated client because the SQLite driver adapter has not yet been installed and configured.
-
-This is an implementation task, not an architectural blocker.
+The backend has integrated the SQLite adapter required by the generated client.
 
 ---
 
@@ -241,7 +248,7 @@ Status:
 
 ✅ Complete
 
-Implemented
+Implemented:
 
 - Axios transport
 - Install bootstrap client
@@ -249,11 +256,13 @@ Implemented
 - Shared Zod validation
 - Shared wire contracts
 
-The SDK is now responsible for all HTTP communication between the extension and backend.
+The SDK is responsible for HTTP communication between the extension and backend.
+
+---
 
 # Technology Snapshot
 
-Backend
+## Backend
 
 - Node.js
 - Express
@@ -261,20 +270,20 @@ Backend
 - Prisma
 - Zod
 
-Development Database
+## Development Database
 
 - SQLite
 
-Production Database
+## Production Database
 
 - PostgreSQL
 
-Extension
+## Extension
 
 - VS Code API
 - TypeScript
 
-Dashboard (planned)
+## Dashboard (planned)
 
 - React
 - Vite
@@ -285,7 +294,7 @@ Dashboard (planned)
 
 # Current Repository Milestones
 
-Completed
+Completed:
 
 - Monorepo established
 - Shared packages
@@ -298,38 +307,39 @@ Completed
 - Prisma setup
 - First migration
 - Development database
+- Install bootstrap API
+- Install token middleware
+- Thin authenticated session ingest endpoint
 
-In Progress
+In Progress:
 
 - Backend API
+- Database persistence
 
-Not Started
+Not Started:
 
-- Install bootstrap
-- Token resolution
-- Session persistence
 - Dashboard
 - Authentication
 - Analytics
+- Public API authorization design
 
 ---
 
 # Immediate Next Task
 
-Implement the backend installation bootstrap.
+Implement session persistence in the backend.
 
 Recommended order:
 
-1. Implement POST /v1/install.
-2. Generate installation token.
-3. Persist installation and token.
-4. Implement install-token middleware.
-5. Implement the first authenticated endpoint.
+1. Add the repository layer.
+2. Create session, project, activity, and quarantine persistence.
+3. Connect the ingest endpoint to durable storage.
+4. Verify account-scoped queries throughout the write path.
 
-After installation bootstrap is complete:
+After session persistence is complete:
 
-6. Verify end-to-end extension registration.
-7. Begin backend session ingestion.
+5. Begin dashboard implementation.
+6. Continue into authentication and analytics work.
 
 ---
 
