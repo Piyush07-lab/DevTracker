@@ -725,3 +725,62 @@ Implement install bootstrap endpoint (`POST /v1/install`)
 ### Notes
 - Refactored endpoint into Route → Controller → Service architecture while keeping the implementation lightweight.
 - Updated the install response contract to align with the project's identifier format.
+
+## 2026-07-29 HH:MM
+
+### Task
+Extension status and launch readiness review
+
+### Completed
+- Reviewed phase docs and recent session log.
+- Confirmed the extension capture layer is functionally complete.
+- Confirmed the latest build/wiring repair compiled successfully.
+- Identified remaining launch blockers in the SDK/backend handoff and release-hardening path.
+
+### Files
+- docs/DevTracker-Development-Phases.md
+- docs/DevTracker-Phase-DC.md
+- DevTracker-Session-Log-2026-07-29.txt
+
+### Verification
+- Phase docs indicate Phase 2 complete and later phases still pending.
+- Session log reports successful build after wiring repair.
+- Review notes show remaining transport/API contract work.
+
+### Remaining
+- Complete SDK `install()` / `sendSession()` flow.
+- Finish backend persistence path.
+- Add packaging, release, and launch validation.
+
+### Notes
+- Extension is close to internal-alpha ready, not public-launch ready.
+
+## 2026-07-30 11:06
+
+### Task
+Implement install-token authentication middleware
+
+### Completed
+- Added install-token authentication middleware.
+- Implemented Bearer token validation.
+- Implemented SHA-256 hashing for incoming install tokens.
+- Implemented InstallToken lookup using Prisma.
+- Added expiration validation for install tokens.
+- Attached authenticated account context to `req.auth.accountId`.
+- Returned appropriate 401 responses for missing, invalid, and expired tokens.
+
+### Files
+- apps/backend/src/middleware/installToken.ts
+- apps/backend/src/types/express.d.ts (if added)
+
+### Verification
+- Middleware validates Authorization headers.
+- Backend resolves install token to accountId server-side.
+- Authentication boundary now aligns with the Phase-DC install-token design.
+
+### Remaining
+- Protect `/v1/sessions` with the middleware.
+- Implement authenticated session ingestion.
+
+### Notes
+- Authentication is centralized in reusable middleware rather than duplicated across controllers.
