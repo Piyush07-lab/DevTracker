@@ -108,7 +108,7 @@
 | ✅ | Session ingest endpoint |
 | -- | Logging middleware |
 | -- | Error handling middleware |
-| -- | Versioned API routing |
+| ✅ | Versioned API routing |
 
 ---
 
@@ -152,11 +152,12 @@
 
 | Status | Task |
 |:------:|------|
-| -- | Repository layer |
+| ✅ | Repository layer |
 | -- | Account repository |
 | -- | Installation repository |
-| -- | Session repository |
-| -- | Activity repository |
+| ✅ | Session repository |
+| ✅ | Activity repository |
+| ✅ | Project repository |
 
 ---
 
@@ -244,15 +245,12 @@
 
 # Immediate Next Tasks
 
-| Priority | Task                                   |
-| :------: | -------------------------------------- |
-|     1    | Implement session persistence          |
-|     2    | Create Session model                   |
-|     3    | Create Activity model                  |
-|     4    | Create Project model                   |
-|     5    | Implement quarantined_events           |
-|     6    | Logging middleware                     |
-|     7    | Error handling middleware              |
-|     8    | Implement repository layer             |
-|     9    |                                        |
-|    10    |                                        |
+| Priority | Task                                              |
+| :------: | ------------------------------------------------- |
+|     1    | Implement `quarantined_events` model              |
+|     2    | Implement quarantined event persistence           |
+|     3    | Add logging middleware                            |
+|     4    | Add error handling middleware                     |
+|     5    | End-to-end extension → SDK → backend verification |
+|     6    | Integration tests for session ingestion           |
+|     7    | Begin Phase 5 session queue work                  |

@@ -1012,7 +1012,13 @@ Integrate SessionRepository into POST /v1/sessions
 - SessionRepository performs transactional persistence.
 
 ### Remaining
-- Remove the unused `created` variable or return the created session if desired.
+- Remove the unused `created` variable or return the created session if desired * Done
 
 ### Notes
 - The HTTP layer is now cleanly separated from the persistence layer.
+
+### Remaining
+- Implement quarantined event persistence.
+- Add logging middleware.
+- Add error handling middleware.
+- Perform end-to-end verification using the extension and SDK.
