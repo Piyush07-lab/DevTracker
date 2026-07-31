@@ -89,9 +89,9 @@ model Session {
 
   createdAt   DateTime @default(now())
 
-  account   Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  project   Project?   @relation(fields: [projectId], references: [id])
-  activities Activity[]
+  account     Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  project     Project?   @relation(fields: [projectId], references: [id])
+  activities  Activity[]
 
   @@index([accountId])
   @@index([projectId])
@@ -118,7 +118,7 @@ model QuarantinedEvent {
   id         String   @id @default(cuid())
 
   accountId  String
-  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account    Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   rawPayload String
   validationError String

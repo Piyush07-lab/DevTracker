@@ -1022,3 +1022,115 @@ Integrate SessionRepository into POST /v1/sessions
 - Add logging middleware.
 - Add error handling middleware.
 - Perform end-to-end verification using the extension and SDK.
+
+## 2026-07-31 13:10
+
+### Task
+Implement QuarantinedEvent Prisma model
+
+### Completed
+- Added QuarantinedEvent model.
+- Added Account ↔ QuarantinedEvent relation.
+- Added accountId foreign key.
+- Added accountId index.
+- Added rawPayload storage.
+- Added validationError storage.
+- Added createdAt timestamp.
+
+### Files
+- apps/backend/prisma/schema.prisma
+
+### Verification
+- Prisma migration generated.
+- Prisma Client regenerated.
+- Project build completed successfully.
+
+### Remaining
+- Implement QuarantinedEvent repository.
+- Persist rejected payloads during session ingestion.
+
+### Notes
+- Schema complies with the Phase-DC quarantine requirement for retaining rejected payloads rather than discarding them.
+
+
+## 2026-07-31 21:50
+
+### Task
+Implement quarantined event persistence
+
+### Completed
+- Added `QuarantinedEventRepository`.
+- Persisted rejected payloads for validation failures.
+- Persisted rejected payloads for session persistence failures.
+- Integrated quarantine handling into `POST /v1/sessions`.
+- Preserved the existing authentication and validation boundaries.
+
+### Files
+- apps/backend/src/repositories/quarantinedEvent.repository.ts
+- apps/backend/src/routes/v1/session.ts
+
+### Verification
+- Invalid payloads are stored before returning HTTP 400.
+- Persistence failures are stored before returning HTTP 500.
+- Successful requests continue through the transactional persistence path.
+
+### Remaining
+- Add logging middleware.
+- Add error-handling middleware.
+- Perform end-to-end extension → SDK → backend verification.
+
+
+## 2026-07-31 HH:MM
+
+### Task
+Implement logging middleware
+
+### Completed
+- Added centralized request logging middleware using pino-http.
+- Logged HTTP method, URL, status code, and response time.
+- Avoided logging request bodies and Authorization headers.
+- Registered the middleware globally in app.ts.
+
+### Files
+- apps/backend/src/middleware/logging.ts
+- apps/backend/src/app.ts
+
+### Verification
+- Requests are logged automatically.
+- Route handlers remain unchanged.
+- Sensitive request data is not logged.
+
+### Remaining
+- Implement centralized error-handling middleware.
+- Begin end-to-end integration testing.
+
+
+## 2026-07-31 HH:MM
+
+### Task
+Resolve `pino-http` import issue
+
+### Completed
+- Investigated the `TS2349: This expression is not callable` error when configuring centralized logging middleware.
+- Verified TypeScript module resolution, package metadata, and compiler configuration.
+- Determined the issue was caused by using the incorrect import form for `pino-http`.
+- Switched from the default import to the named export, resolving the callable-type error.
+
+### Files
+- apps/backend/src/middleware/logging.ts
+
+### Verification
+- Confirmed the compiler recognizes the named `pinoHttp` export as a callable function.
+- Remaining typecheck errors are unrelated to logging (`ActivityRepository` union narrowing and `SessionRepository` `projectId` nullability).
+
+### Notes
+- `pino-http` exports both a default export and a named export:
+  ```ts
+  export default PinoHttp;
+  export { PinoHttp as pinoHttp };
+  ```
+- Although both are defined by the library, the project's TypeScript/ESM configuration resolved the callable type correctly only through the named import:
+  ```ts
+  import { pinoHttp } from "pino-http";
+  ```
+- Lesson learned: when a library exposes both default and named exports, TypeScript's inferred type may differ depending on module interop and package declaration behavior. If a default import is unexpectedly typed as the module namespace (`typeof import(...)`), verify whether the library also exposes a named export before assuming a configuration issue.
