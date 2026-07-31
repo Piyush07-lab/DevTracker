@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { SessionPayloadSchema } from "@devtracker/types";
 import { installTokenMiddleware } from "../../middleware/installToken.js";
+import { SessionRepository } from "../../repositories/session.repository.js";
 
 const router: Router = Router();
 
@@ -19,14 +20,17 @@ router.post(
 
         const session = result.data;
 
-        console.log("Session received", {
-            accountId: req.auth,
+        const repository = new SessionRepository();
+
+        const created = await repository.create(
+            req.auth.accountId,
             session
-        });
+        );
 
         return res.status(200).json({
             success: true,
-            message: "Session accepted"
+            message: "Session accepted",
+            created
         });
     }
 );

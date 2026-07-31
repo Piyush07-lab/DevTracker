@@ -886,3 +886,133 @@ TaskList.md sync check
 
 ### Notes
 - The uploaded TaskList.md should be treated as the current working checklist, but it is not fully synchronized with the repo truth yet.
+
+## 2026-07-31 11:58
+
+### Task
+Implement SessionRepository
+
+### Completed
+- Created `SessionRepository`.
+- Added persistence method accepting `accountId` and `SessionPayload`.
+- Persisted the initial `Session` entity using Prisma.
+- Kept HTTP handling, validation, and authentication outside the repository.
+
+### Files
+- apps/backend/src/repositories/session.repository.ts
+
+### Verification
+- Repository depends only on Prisma and shared types.
+- Contains persistence logic only.
+- No Express dependencies.
+
+### Remaining
+- Implement `ProjectRepository`.
+- Link sessions to projects.
+- Implement `ActivityRepository`.
+- Integrate repositories into the session ingestion route.
+
+
+## 2026-07-31 12:15
+
+### Task
+Implement project.repository.ts
+
+### Completed
+- Added ProjectRepository.
+- Implemented findOrCreate(accountId, name).
+- Used Prisma upsert() with the composite unique key (accountId, name).
+- Kept the repository persistence-only.
+
+### Files
+- apps/backend/src/repositories/project.repository.ts
+
+### Verification
+- Verified the Prisma schema defines @@unique([accountId, name]).
+- Confirmed upsert() can use the generated accountId_name unique selector.
+
+### Remaining
+- Integrate ProjectRepository into SessionRepository.
+- Implement ActivityRepository.
+
+### Notes
+- Repository follows the persistence-only architecture with no HTTP or authentication concerns.
+
+## 2026-07-31 12:30
+
+### Task
+Implement ActivityRepository
+
+### Completed
+- Created `ActivityRepository`.
+- Added bulk activity persistence using `createMany()`.
+- Mapped `DevTrackerEvent` objects to `Activity` records.
+- Associated each activity with the authenticated account and session.
+- Handled empty event collections without issuing database writes.
+
+### Files
+- apps/backend/src/repositories/activity.repository.ts
+
+### Verification
+- Repository depends only on Prisma and shared types.
+- Uses efficient bulk persistence.
+- Contains no HTTP or authentication logic.
+
+### Remaining
+- Orchestrate repositories in `SessionRepository` using a Prisma transaction.
+- Integrate the persistence layer into the `/v1/sessions` endpoint.
+- Implement quarantined event persistence.
+
+
+## 2026-07-31 12:45
+
+### Task
+Implement transactional session persistence
+
+### Completed
+- Introduced a shared `TransactionClient` type.
+- Updated `ProjectRepository` and `ActivityRepository` to use the transaction client.
+- Refactored `SessionRepository` to orchestrate project resolution, session creation, and activity persistence.
+- Wrapped all persistence operations in a single Prisma transaction.
+
+### Files
+- apps/backend/src/lib/prisma.ts
+- apps/backend/src/repositories/session.repository.ts
+- apps/backend/src/repositories/project.repository.ts
+- apps/backend/src/repositories/activity.repository.ts
+
+### Verification
+- All repository operations execute within a single transaction.
+- No repository uses the global Prisma client inside transactional work.
+- Persistence is atomic across related entities.
+
+### Remaining
+- Integrate `SessionRepository` into `POST /v1/sessions`.
+- Verify end-to-end session ingestion.
+- Implement quarantined event persistence.
+
+
+## 2026-07-31 12:55
+
+### Task
+Integrate SessionRepository into POST /v1/sessions
+
+### Completed
+- Replaced temporary console logging with SessionRepository.
+- Kept authentication in middleware.
+- Kept request validation in the route.
+- Delegated all persistence to SessionRepository.
+- Removed Prisma usage from the route.
+
+### Files
+- apps/backend/src/routes/v1/session.ts
+
+### Verification
+- Route now validates, authenticates, invokes SessionRepository, and returns a success response.
+- SessionRepository performs transactional persistence.
+
+### Remaining
+- Remove the unused `created` variable or return the created session if desired.
+
+### Notes
+- The HTTP layer is now cleanly separated from the persistence layer.

@@ -1,5 +1,7 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient } from "../generated/prisma/client.js";
+import { PrismaClient, Prisma } from "../generated/prisma/client.js";
+
+export type TransactionClient = Prisma.TransactionClient;
 
 const adapter = new PrismaBetterSqlite3({
     url: process.env.DATABASE_URL ?? "file:./prisma/dev.db",
