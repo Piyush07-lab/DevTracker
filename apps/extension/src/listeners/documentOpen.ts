@@ -22,6 +22,7 @@ export function registerDocumentOpenListener(
             type: "document.open",
             timestamp: Date.now(),
             file: toTrackedPath(document.uri),
+            language: document.languageId,
             ...(project !== undefined ? { project } : {}),
         };
 

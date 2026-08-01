@@ -22,6 +22,7 @@ export function registerDocumentCloseListener(
             type: "document.close",
             timestamp: Date.now(),
             file: toTrackedPath(document.uri),
+            language: document.languageId,
             ...(project !== undefined ? { project } : {}),
         };
 

@@ -23,7 +23,7 @@ export class SessionRepository {
             const createdSession = await tx.session.create({
                 data: {
                     accountId,
-                    projectId: project?.id,
+                    projectId: project?.id ?? null,
                     startedAt: new Date(session.startTime),
                     endedAt: new Date(session.lastActivity),
                     durationMs: session.lastActivity - session.startTime

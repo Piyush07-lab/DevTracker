@@ -22,6 +22,7 @@ export function registerDocumentSaveListener(
             type: "document.save",
             timestamp: Date.now(),
             file: toTrackedPath(document.uri),
+            language: document.languageId,
             ...(project !== undefined ? { project } : {}),
         };
 

@@ -1134,3 +1134,41 @@ Resolve `pino-http` import issue
   import { pinoHttp } from "pino-http";
   ```
 - Lesson learned: when a library exposes both default and named exports, TypeScript's inferred type may differ depending on module interop and package declaration behavior. If a default import is unexpectedly typed as the module namespace (`typeof import(...)`), verify whether the library also exposes a named export before assuming a configuration issue.
+
+
+## 2026-08-01 13:19
+
+### Task
+Propagate language metadata through the shared event pipeline
+
+### Completed
+- Added `language` to the shared event contract.
+- Updated the shared Zod schema and TypeScript interfaces.
+- Updated all extension event producers to include the active document language.
+- Preserved the SDK transport without modification.
+- Enabled backend activity persistence to consume `event.language`.
+- Resolved the contract mismatch between the shared types and the database persistence layer.
+
+### Files
+- packages/types/src/events.ts
+- apps/extension/src/listeners/activeEditor.ts
+- apps/extension/src/listeners/documentOpen.ts
+- apps/extension/src/listeners/documentSave.ts
+- apps/extension/src/listeners/documentClose.ts
+- apps/backend/src/repositories/activity.repository.ts
+
+### Verification
+- `pnpm build` ✅
+- `pnpm typecheck` ✅
+- All workspace packages built successfully.
+- All workspace packages passed TypeScript type checking.
+- Shared contract, extension, SDK, and backend remain synchronized.
+
+### Remaining
+- Implement centralized error-handling middleware.
+- Perform end-to-end extension → SDK → backend verification.
+- Add integration tests for session ingestion.
+
+### Notes
+- The shared event contract remains the single source of truth for event payloads across the extension, SDK, and backend.
+- Language metadata is now propagated end-to-end without backend-specific event types or unsafe type assertions.

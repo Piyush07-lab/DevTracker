@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export interface BaseEvent {
     timestamp: number;
+    language: string;
     project?: string | undefined;
 }
 
@@ -13,6 +14,7 @@ export interface BaseEvent {
 
 export const BaseEventSchema = z.object({
     timestamp: z.number().int().nonnegative(),
+    language: z.string().min(1),
     project: z.string().min(1).optional()
 });
 

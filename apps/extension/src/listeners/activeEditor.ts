@@ -19,6 +19,7 @@ export function registerActiveEditorListener(
             type: "editor.active",
             timestamp: Date.now(),
             file: toTrackedPath(editor.document.uri),
+            language: editor.document.languageId,
             ...(project !== undefined ? { project } : {}),
         };
 
