@@ -252,3 +252,27 @@
 |     2    | End-to-end extension → SDK → backend verification |
 |     3    | Integration tests for session ingestion           |
 |     4    | Begin Phase 5 session queue work                 |
+
+
+# TODO Before Deployment
+
+## Backend Middleware Improvements
+
+### Structured Error Logging
+
+- [ ] Improve error logging by logging the native `Error` object instead of manually constructing `{ message, stack }`.
+- Current implementation:
+  ```ts
+  req.log.error({
+      err: {
+          message: error.message,
+          stack: error.stack,
+      },
+  }, "Unhandled server error");
+
+    ```
+
+| Status | Task |
+|:------:|------|
+| -- | Register helmet() globally |
+| -- | Register cors() globally |

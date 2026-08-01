@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { SessionPayloadSchema } from "@devtracker/types";
-import { installTokenMiddleware } from "../../middleware/installToken.js";
+import { installTokenMiddleware } from "../../middleware/index.js";
 import { SessionRepository } from "../../repositories/session.repository.js";
 import { QuarantinedEventRepository } from "../../repositories/quarantinedEvent.repository.js";
 

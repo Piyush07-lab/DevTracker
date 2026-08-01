@@ -1172,3 +1172,29 @@ Propagate language metadata through the shared event pipeline
 ### Notes
 - The shared event contract remains the single source of truth for event payloads across the extension, SDK, and backend.
 - Language metadata is now propagated end-to-end without backend-specific event types or unsafe type assertions.
+
+## 2026-08-01 16:12
+
+### Task
+Implement centralized error-handling middleware
+
+### Completed
+- Added global Express error-handling middleware.
+- Standardized JSON error responses.
+- Logged unexpected server errors.
+- Hid stack traces in production while preserving them for development.
+- Registered the middleware after all routes.
+
+### Files
+- apps/backend/src/middleware/errorHandler.ts
+- apps/backend/src/app.ts
+
+### Verification
+- Middleware registered last in the pipeline.
+- Consistent JSON error responses returned.
+- Production responses do not expose stack traces.
+- Unexpected errors are logged.
+
+### Remaining
+- End-to-end extension → SDK → backend verification.
+- Integration tests for session ingestion.
