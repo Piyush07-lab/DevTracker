@@ -106,7 +106,7 @@
 | ✅ | Token hashing |
 | ✅ | Install token generation |
 | ✅ | Session ingest endpoint |
-| -- | Logging middleware |
+| ✅ | Logging middleware |
 | -- | Error handling middleware |
 | ✅ | Versioned API routing |
 
@@ -144,7 +144,7 @@
 | ✅ | Session model |
 | ✅ | Project model |
 | ✅ | Activity model |
-| -- | QuarantinedEvents model |
+| ✅ | QuarantinedEvents model |
 
 ---
 
@@ -158,6 +158,7 @@
 | ✅ | Session repository |
 | ✅ | Activity repository |
 | ✅ | Project repository |
+| ✅ | QuarantinedEvent repository |
 
 ---
 
@@ -247,10 +248,7 @@
 
 | Priority | Task                                              |
 | :------: | ------------------------------------------------- |
-|     1    | Implement `quarantined_events` model              |
-|     2    | Implement quarantined event persistence           |
-|     3    | Add logging middleware                            |
-|     4    | Add error handling middleware                     |
-|     5    | End-to-end extension → SDK → backend verification |
-|     6    | Integration tests for session ingestion           |
-|     7    | Begin Phase 5 session queue work                  |
+|     1    | Add error handling middleware                     |
+|     2    | End-to-end extension → SDK → backend verification |
+|     3    | Integration tests for session ingestion           |
+|     4    | Begin Phase 5 session queue work                 |
