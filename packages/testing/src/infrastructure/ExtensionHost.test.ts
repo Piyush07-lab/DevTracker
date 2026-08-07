@@ -92,7 +92,8 @@ describe("ExtensionHost", () => {
             args: [
                 "--extensionDevelopmentPath=" + resolve("/extension"),
                 resolve("/workspace")
-            ]
+            ],
+            shell: process.platform === "win32"
         });
     });
 });

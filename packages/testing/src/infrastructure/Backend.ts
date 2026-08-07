@@ -35,7 +35,9 @@ export class Backend implements IBackend {
             env: {
                 ...process.env,
                 PORT: String(port)
-            }
+            },
+            // pnpm.cmd is a batch file on Windows and must use cmd.exe.
+            shell: process.platform === "win32"
         });
     }
 

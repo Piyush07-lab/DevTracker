@@ -20,7 +20,9 @@ export class ExtensionHost implements IExtensionHost {
                 resolve(options.extensionPath),
 
                 resolve(options.workspaceRoot)
-            ]
+            ],
+            // The VS Code `code` launcher resolves to a .cmd shim on Windows.
+            shell: process.platform === "win32"
         });
     }
 

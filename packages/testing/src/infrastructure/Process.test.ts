@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import { Process } from "./Process.js";
 
@@ -116,4 +119,46 @@ describe("Process", () => {
 
         expect(code).toBe(7);
     });
+
+    it.skipIf(!isWindows)(
+        "launches a batch file with its cwd, args, env, and stdio",
+        async () => {
+            const directory = await mkdtemp(
+                join(tmpdir(), "devtracker-process-")
+            );
+            const command = join(directory, "fixture.cmd");
+
+            try {
+                await writeFile(
+                    command,
+                    "@echo off\r\necho %PROCESS_FIXTURE_ENV%:%1\r\n",
+                    "utf8"
+                );
+
+                testProcess = new Process({
+                    command,
+                    args: ["argument"],
+                    cwd: directory,
+                    env: {
+                        ...process.env,
+                        PROCESS_FIXTURE_ENV: "environment"
+                    },
+                    shell: true
+                });
+
+                await testProcess.start();
+
+                expect(await testProcess.waitForExit()).toBe(0);
+                expect(testProcess.stdout()).toContain(
+                    "environment:argument"
+                );
+                expect(testProcess.stderr()).toBe("");
+            } finally {
+                await rm(directory, {
+                    recursive: true,
+                    force: true
+                });
+            }
+        }
+    );
 });

@@ -76,7 +76,8 @@ describe("Backend", () => {
             cwd: "/repo",
             env: expect.objectContaining({
                 PORT: "3000"
-            })
+            }),
+            shell: process.platform === "win32"
         });
     });
 

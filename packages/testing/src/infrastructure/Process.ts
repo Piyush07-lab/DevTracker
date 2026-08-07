@@ -10,6 +10,7 @@ export interface ProcessOptions {
     args: readonly string[];
     cwd?: string;
     env?: NodeJS.ProcessEnv;
+    shell?: boolean;
 }
 
 export class Process implements IProcess {
@@ -25,7 +26,8 @@ export class Process implements IProcess {
         this.options = {
             ...options,
             args: options.args ?? [],
-            env: options.env ?? process.env
+            env: options.env ?? process.env,
+            shell: options.shell ?? false
         };
     }
 
@@ -35,19 +37,13 @@ export class Process implements IProcess {
         }
 
         await new Promise<void>((resolve, reject) => {
-
-            console.log({
-                command: this.options.command,
-                cwd: this.options.cwd,
-                args: this.options.args,
-            });
-            
             const child = spawn(
                 this.options.command,
                 this.options.args,
                 {
                     cwd: this.options.cwd,
                     env: this.options.env,
+                    shell: this.options.shell,
                     stdio: ["ignore", "pipe", "pipe"]
                 }
             );
@@ -85,6 +81,12 @@ export class Process implements IProcess {
 
         const child = this.child;
 
+        if (child.exitCode !== null || child.signalCode !== null) {
+            this.running = false;
+            this.child = undefined;
+            return;
+        }
+
         await new Promise<void>((resolve) => {
 
             // eslint-disable-next-line prefer-const
@@ -103,7 +105,18 @@ export class Process implements IProcess {
 
             child.once("exit", cleanup);
 
-            child.kill("SIGTERM");
+            if (process.platform === "win32" && child.pid !== undefined) {
+                // Windows commands can create child processes. Terminate the
+                // complete tree so they are not left running after stop().
+                spawn("taskkill", [
+                    "/pid",
+                    String(child.pid),
+                    "/t",
+                    "/f"
+                ], { stdio: "ignore" });
+            } else {
+                child.kill("SIGTERM");
+            }
 
             timer = setTimeout(() => {
                 if (child.exitCode === null) {
