@@ -1198,3 +1198,150 @@ Implement centralized error-handling middleware
 ### Remaining
 - End-to-end extension → SDK → backend verification.
 - Integration tests for session ingestion.
+
+## 2026-08-07
+
+### Task
+
+Complete Testing Infrastructure (packages/testing)
+
+### Completed
+
+- Created the standalone `packages/testing` workspace.
+- Implemented the core testing infrastructure:
+  - `Process`
+  - `Backend`
+  - `ExtensionHost`
+  - `Workspace`
+  - `HttpClient`
+- Defined contract interfaces for all infrastructure components.
+- Added barrel exports to simplify package consumption.
+- Implemented comprehensive unit tests for every infrastructure component.
+- Built the reusable `TestEnvironment` abstraction.
+- Implemented the first end-to-end bootstrap test (`InstallBootstrap.test.ts`).
+- Established a deterministic startup sequence:
+  - Workspace creation
+  - Backend startup
+  - Backend health verification
+  - Extension Host startup
+- Implemented coordinated teardown:
+  - Extension Host shutdown
+  - Backend shutdown
+  - Workspace cleanup
+- Improved Windows compatibility by:
+  - Supporting platform-specific executable selection
+  - Adding optional shell execution for Windows command shims
+  - Improving Windows process termination
+  - Normalizing cross-platform process launching behavior
+- Added Windows-specific regression tests covering process execution.
+- Refined the testing architecture by:
+  - Simplifying constructor responsibilities
+  - Deriving `extensionPath` from `repositoryRoot`
+  - Separating immutable configuration from runtime state
+  - Improving lifecycle cleanup safety
+  - Applying late initialization where appropriate
+- Resolved all remaining infrastructure issues, including:
+  - TypeScript strict-mode errors
+  - Child process typing
+  - Vitest matcher compatibility
+  - Platform-dependent path handling
+  - Process lifecycle synchronization
+  - Backend readiness polling
+  - End-to-end startup sequencing
+  - Windows `spawn` compatibility
+
+### Files
+
+- `packages/testing/src/infrastructure/Process.ts`
+- `packages/testing/src/infrastructure/Backend.ts`
+- `packages/testing/src/infrastructure/ExtensionHost.ts`
+- `packages/testing/src/infrastructure/Workspace.ts`
+- `packages/testing/src/infrastructure/HttpClient.ts`
+- `packages/testing/src/contracts/*`
+- `packages/testing/src/TestEnvironment.ts`
+- `packages/testing/src/e2e/InstallBootstrap.test.ts`
+- All corresponding unit test files
+- Package configuration (`package.json`, `tsconfig.json`, `index.ts`)
+
+### Verification
+
+Verified successfully:
+
+- All infrastructure unit tests pass.
+- `InstallBootstrap.test.ts` passes.
+- Backend launches correctly on Windows and non-Windows platforms.
+- Temporary workspaces are created and cleaned up correctly.
+- Backend health checks complete successfully.
+- Extension Host launches after backend readiness.
+- End-to-end bootstrap sequence executes successfully.
+- Testing infrastructure is reusable for future integration and E2E scenarios.
+
+### Remaining
+
+- Implement authenticated session upload integration test.
+- Implement database persistence integration test.
+- Implement quarantined payload integration test.
+- Implement middleware behavior integration test.
+
+### Notes
+
+This milestone completes the testing infrastructure for the DevTracker monorepo. The `packages/testing` package now provides a reusable foundation for deterministic unit, integration, and end-to-end testing, enabling future features to be validated through shared infrastructure rather than bespoke test setups.
+
+## 2026-08-07 HH:MM
+
+### Task
+Begin authenticated session upload integration testing
+
+### Completed
+- Initiated implementation of the first authenticated end-to-end integration test.
+- Established the next milestone after successful bootstrap verification.
+
+### Files
+- packages/testing/src/e2e/AuthenticatedSessionUpload.test.ts (planned)
+
+### Verification
+- Target verification:
+  - POST /v1/install succeeds.
+  - Install token is returned.
+  - Authenticated POST /v1/sessions succeeds.
+  - Environment starts and stops cleanly.
+
+### Remaining
+- Database persistence verification.
+- Quarantined payload verification.
+- Middleware behavior verification.
+
+### Notes
+- This task validates the complete authenticated extension → backend communication path before expanding E2E coverage.
+
+## 2026-08-07
+
+### Task
+Implement authenticated session upload E2E test
+
+### Completed
+- Added `AuthenticatedSessionUpload.test.ts`.
+- Verified the complete authenticated workflow using the production SDK.
+- Performed installation bootstrap through `POST /v1/install`.
+- Stored and reused the install token.
+- Uploaded a valid `SessionPayload` through `POST /v1/sessions`.
+- Confirmed successful end-to-end communication between the SDK and backend.
+- All infrastructure, unit, and end-to-end tests now pass.
+
+### Files
+- `packages/testing/src/e2e/AuthenticatedSessionUpload.test.ts`
+
+### Verification
+- `pnpm --filter @devtracker/testing test:watch`
+- 7 test files passed.
+- 37 tests passed.
+- `InstallBootstrap.test.ts` passed.
+- `AuthenticatedSessionUpload.test.ts` passed.
+
+### Remaining
+- Implement database persistence integration test.
+- Implement quarantined payload integration test.
+- Implement middleware behavior integration test.
+
+### Notes
+- The testing package now validates both installation bootstrap and authenticated session upload through the production SDK, establishing the baseline for future integration testing.
