@@ -28,7 +28,11 @@ export class SessionProcessor implements EventProcessor {
 
         const validated = SessionPayloadSchema.parse(payload);
 
+        console.log("[E2E] Sending completed session");
+
         await this.client.sendSession(validated);
+
+        console.log("[E2E] Session upload completed");
     }
 
     public getCurrentSession() {

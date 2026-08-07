@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { stdout } from "node:process";
 
 import {
     InstallResponse,
@@ -51,6 +52,8 @@ export class DevTrackerClient {
             throw new Error("Client has not been installed.");
         }
 
+        stdout.write("[SDK] POST /v1/sessions\n");
+
         await this.api.post(
             "/v1/sessions",
             session,
@@ -60,6 +63,7 @@ export class DevTrackerClient {
                 },
             }
         );
+        stdout.write("[SDK] Session upload complete\n");
     }
 
 }

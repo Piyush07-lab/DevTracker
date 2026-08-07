@@ -10,6 +10,7 @@ router.post(
     "/sessions",
     installTokenMiddleware,
     async (req, res) => {
+        console.log("[Backend] /v1/sessions received");
         const repository = new SessionRepository();
         const quarantineRepository = new QuarantinedEventRepository();
 
@@ -35,6 +36,8 @@ router.post(
                 req.auth.accountId,
                 session
             );
+
+            console.log("[Backend] Session persisted");
 
             return res.status(200).json({
                 success: true,

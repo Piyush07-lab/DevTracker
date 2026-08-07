@@ -12,11 +12,14 @@ import {
 } from "./processors";
 import { DevTrackerClient } from "@devtracker/sdk";
 
-export function activate(context: vscode.ExtensionContext): void {
+export async function activate(context: vscode.ExtensionContext): Promise<void> {
     console.log("DevTracker activated.");
 
     const dispatcher = new EventDispatcher();
     const client = new DevTrackerClient("http://localhost:3000");
+
+    await client.install();
+    
     const sessionProcessor = new SessionProcessor(client);
 
     dispatcher.register(new LoggerProcessor());
