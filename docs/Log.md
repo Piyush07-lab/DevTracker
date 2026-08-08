@@ -1345,3 +1345,40 @@ Implement authenticated session upload E2E test
 
 ### Notes
 - The testing package now validates both installation bootstrap and authenticated session upload through the production SDK, establishing the baseline for future integration testing.
+
+
+## 2026-08-08
+
+### Task
+Configure TestEnvironment repository root and complete authenticated session upload test
+
+### Completed
+- Introduced `TestConfig.ts` to centralize test configuration.
+- Replaced hardcoded `repositoryRoot` in E2E tests with resolved configuration.
+- Implemented repository root resolution using `resolve(import.meta.dirname, "../../../")`.
+- Added environment variable override support (`DEVTRACKER_REPOSITORY_ROOT`, `VSCODE_EXECUTABLE`).
+- Updated `InstallBootstrap.test.ts` and `AuthenticatedSessionUpload.test.ts` to use `TestConfig`.
+- Verified configuration works consistently across test runs.
+- All unit and E2E tests pass successfully (37/37).
+
+### Files
+- `packages/testing/src/config/TestConfig.ts`
+- `packages/testing/src/e2e/InstallBootstrap.test.ts`
+- `packages/testing/src/e2e/AuthenticatedSessionUpload.test.ts`
+
+### Verification
+- Executed: `pnpm --filter @devtracker/testing test`
+- All tests passed:
+  - Install bootstrap verified
+  - Authenticated session upload verified
+  - No regressions in infrastructure tests
+
+### Remaining
+- Implement database persistence integration test
+- Implement quarantined payload integration test
+- Implement middleware behavior integration test
+
+### Notes
+- Repository root configuration is now portable and no longer hardcoded.
+- TestEnvironment remains clean and configuration-agnostic.
+- This completes stabilization of the E2E testing foundation.

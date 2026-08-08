@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-
+import { TestConfig } from "../config/TestConfig.js";
 import { TestEnvironment } from "./TestEnvironment.js";
 
 describe("E2E-001 Install Bootstrap", () => {
@@ -7,8 +7,8 @@ describe("E2E-001 Install Bootstrap", () => {
 
     beforeEach(() => {
         env = new TestEnvironment({
-            repositoryRoot: "C:\\Users\\theon\\OneDrive\\Desktop\\DevTracker",
-            vscodeExecutable: "code"
+            repositoryRoot: TestConfig.repositoryRoot,
+            vscodeExecutable: TestConfig.vscodeExecutable
         });
     });
 

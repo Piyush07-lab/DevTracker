@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { TestEnvironment } from "./TestEnvironment.js";
+import { TestConfig } from "../config/TestConfig.js";
 import { DevTrackerClient } from "@devtracker/sdk";
 
 describe("E2E-002 Authenticate Session Upload", () => {
@@ -7,8 +8,8 @@ describe("E2E-002 Authenticate Session Upload", () => {
 
     beforeEach(() => {
         env = new TestEnvironment({
-            repositoryRoot: "C:\\Users\\theon\\OneDrive\\Desktop\\DevTracker",
-            vscodeExecutable: "code"
+            repositoryRoot: TestConfig.repositoryRoot,
+            vscodeExecutable: TestConfig.vscodeExecutable
         });
     });
 
